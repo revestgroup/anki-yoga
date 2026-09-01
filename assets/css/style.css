@@ -1,0 +1,1677 @@
+/* =============================================================
+   Anki Strahl — Somatic Yin Yoga & ätherische Öle
+
+   Sie heißt Strahl. Ihr Logo ist eine aufgehende Sonne.
+   Daraus ist der Bauplan der Seite geworden: Sie beginnt in der
+   Nacht, geht durch die Dämmerung und endet im Tag. Das ist
+   gleichzeitig ihr Weg vom Lauten ins Leise.
+
+   Farbe passiert genau zweimal:
+   ein lila Band (die Dämmerung) und die gelbe Öl-Sektion (der Tag).
+   Sonst ist Farbe nur Linie, Zitat und Fokus.
+
+   Schrift: Literata trägt alles, meist im leichten Schnitt.
+   Jost erscheint nur auf kleinen Schildern.
+
+   Bewegung: die Sonne (Leiste, Hero, Footer) · Atemkreis ·
+   gezogener Strich · Öltropfen · Bilder, die von unten aufgehen.
+   ============================================================= */
+
+/* ---------- 1 · TOKENS ---------- */
+
+:root {
+  --paper:   oklch(0.988 0.002 300);
+  --tint:    oklch(0.966 0.006 300);
+
+  --ink:     oklch(0.235 0.020 300);
+  --night:   oklch(0.175 0.028 300);   /* Hero und Footer */
+  --dusk:    oklch(0.335 0.078 300);   /* das Zitatband */
+  --ink-2:   oklch(0.45 0.015 300);
+  --ink-3:   oklch(0.58 0.012 300);
+  --line:    oklch(0.905 0.004 300);
+  --line-2:  oklch(0.845 0.006 300);
+
+  /* Die zwei Farben. Violett ist die Stunde vor dem Aufgehen,
+     Gelb das erste Licht. Beide sind textsicher eingestellt. */
+  --lilac:    oklch(0.47 0.115 300);   /* 4.9 : 1 auf Papier */
+  --lilac-lt: oklch(0.80 0.075 300);   /* Fassung für dunklen Grund */
+  --sunlight: oklch(0.918 0.088 92);   /* Fläche der Öl-Sektion */
+  /* Zwei aufgehellte Fassungen. Bewusst als feste Werte, nicht als
+     color-mix mit --paper: --paper liegt auf Hue 300, das Gelb auf 92 —
+     OKLCH nimmt den kürzeren Weg über 339 und die Mischung wird rosa. */
+  --sun-wash: oklch(0.972 0.023 92);   /* Kursplan-Karten auf Weiß */
+  --sun-card: oklch(0.966 0.032 92);   /* Ablauf-Karten auf der gelben Fläche */
+  --sun-deep: oklch(0.72 0.145 82);    /* nur Strich, nie Text */
+  --alarm:    oklch(0.50 0.150 25);
+
+  /* Semantische Rollen. Nur diese werden von Sektionen überschrieben. */
+  --bg:        var(--paper);
+  --surface:   var(--tint);
+  --fg:        var(--ink-2);
+  --fg-strong: var(--ink);
+  --fg-muted:  var(--ink-3);
+  --rule:      var(--line);
+  --accent:    var(--lilac);
+
+  --font-serif: Literata, Georgia, "Times New Roman", serif;
+  --font-sans:  Jost, "Helvetica Neue", Arial, sans-serif;
+
+  --step-hero:  clamp(2.6rem, 7.4vw, 5.5rem);
+  --step-said:  clamp(1.6rem, 3.2vw, 2.5rem);
+  --step-h3:    clamp(1.2rem, 1.9vw, 1.5rem);
+  --step-lead:  clamp(1.08rem, 0.98rem + 0.45vw, 1.28rem);
+  --measure:    36rem;
+
+  /* --shell ist die Inhaltsbreite. Wer seinen Rand selbst mitbringt,
+     rechnet ihn oben drauf — sonst rutschen Leiste und Hero gegenüber
+     dem Fließtext um genau eine Randbreite nach innen. */
+  /* Weiche Kanten. Harte Ecken plus Haarlinien lassen jede Seite wie
+     einen Zeitschriftensatz aussehen — Radien nehmen das raus. */
+  --r-img:  6px;
+  --r-card: 10px;
+
+  --shell:     74rem;
+  --gutter:    clamp(1.5rem, 5vw, 5rem);
+  --shell-out: calc(var(--shell) + 2 * var(--gutter));
+  --section-y: clamp(5.5rem, 11vw, 10rem);
+
+  /* Bewegung. Lang und weich — nichts federt, nichts springt. */
+  --ease:      cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-press:  120ms;
+  --dur-state:  260ms;
+  --dur-reveal: 900ms;
+
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-controls: 20;
+  --z-sticky: 100;
+  --z-panel: 200;
+  --z-nav: 250;    /* über dem Panel — sonst ist der Schließen-Knopf begraben */
+  --z-skip: 300;
+}
+
+/* Die Nacht. Hero und Footer — Anfang und Ende. */
+.on-night {
+  --bg:        var(--night);
+  --surface:   oklch(0.28 0.028 300);
+  --fg:        oklch(0.82 0.012 300);
+  --fg-strong: var(--paper);
+  --fg-muted:  oklch(0.68 0.014 300);
+  --rule:      oklch(1 0 0 / 0.22);
+  --accent:    var(--lilac-lt);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Die Dämmerung. Nur das Zitatband. */
+.on-dusk {
+  --bg:        var(--dusk);
+  --surface:   oklch(0.40 0.080 300);
+  --fg:        oklch(0.88 0.022 300);
+  --fg-strong: oklch(0.985 0.006 300);
+  --fg-muted:  oklch(0.77 0.030 300);
+  --rule:      oklch(1 0 0 / 0.22);
+  --accent:    oklch(0.86 0.075 95);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* Der Tag. Nur die Öl-Sektion. Violett auf Gelb — die beiden
+   Farben der Marke treffen sich genau einmal. */
+.on-sun {
+  --bg:        var(--sunlight);
+  --surface:   oklch(0.86 0.090 92);
+  --fg:        oklch(0.385 0.045 78);
+  --fg-strong: oklch(0.245 0.045 78);
+  --fg-muted:  oklch(0.505 0.048 78);
+  --rule:      oklch(0.245 0.045 78 / 0.22);
+  --accent:    oklch(0.38 0.105 300);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* ---------- 2 · RESET ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  background: var(--night);
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--fg);
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* clip statt hidden: hidden würde den klebenden Hero brechen. */
+  overflow-x: clip;
+}
+
+h1, h2, h3, p, figure, figcaption, blockquote, dl, dd { margin: 0; }
+ul, ol { margin: 0; padding: 0; }
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
+table { border-collapse: collapse; }
+
+/* Der graue Kasten, den iOS beim Antippen über jedes Ziel legt, macht auch
+   die ruhigste Seite hektisch. Rückmeldung geben wir selbst — siehe :active. */
+a, button, summary, label, [role="button"] { -webkit-tap-highlight-color: transparent; }
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--lilac) 22%, transparent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip-path: inset(50%); overflow: hidden; white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute; left: 50%; top: 0;
+  transform: translate(-50%, -120%);
+  z-index: var(--z-skip);
+  background: var(--paper); color: var(--ink);
+  font-family: var(--font-sans); font-size: 0.85rem;
+  padding: 0.75rem 1.25rem; border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  transition: transform var(--dur-state) var(--ease);
+}
+.skip-link:focus-visible { transform: translate(-50%, 0); }
+
+/* ---------- 3 · BAUSTEINE ---------- */
+
+/* Überschriften sind Sätze, die Anki so sagen würde. Deshalb weder
+   Kicker noch Ornament darüber — nur Text in Erzählgröße. */
+.said {
+  font-family: var(--font-serif);
+  font-size: var(--step-said);
+  font-weight: 300;
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  color: var(--fg-strong);
+  max-width: 19em;
+  text-wrap: balance;
+}
+.said--lead { max-width: 14em; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.8rem 1.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--fg-strong);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background var(--dur-state) var(--ease-soft),
+              border-color var(--dur-state) var(--ease-soft),
+              color var(--dur-state) var(--ease-soft),
+              transform var(--dur-press) var(--ease-soft);
+}
+.btn--primary {
+  background: var(--fg-strong);
+  border-color: var(--fg-strong);
+  color: var(--bg);
+}
+.btn--sm { min-height: 38px; padding: 0.55rem 1.1rem; font-size: 0.8rem; }
+.btn--wide { width: 100%; }
+.btn:active { transform: scale(0.97); }
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { border-color: var(--fg-strong); }
+  .btn--primary:hover {
+    background: color-mix(in oklch, var(--fg-strong) 82%, var(--lilac));
+    border-color: color-mix(in oklch, var(--fg-strong) 82%, var(--lilac));
+  }
+}
+
+.link-arrow {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--fg-strong);
+  text-decoration: none;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--rule);
+  transition: color var(--dur-state) var(--ease-soft),
+              border-color var(--dur-state) var(--ease-soft);
+}
+.link-arrow::after {
+  /* Als Escape notiert, damit der Pfeil auch dann stimmt, wenn ein Server
+     die CSS-Datei ohne charset ausliefert. */
+  content: "\2192";
+  transition: transform var(--dur-state) var(--ease);
+}
+.link-arrow--sm { font-size: 0.78rem; }
+
+@media (hover: hover) and (pointer: fine) {
+  .link-arrow:hover { color: var(--accent); border-color: var(--accent); }
+  .link-arrow:hover::after { transform: translateX(4px); }
+}
+
+/* ---------- 4 · DIE SONNE ----------
+   Ihr Logo, als Zeichnung nachgebaut. Dreimal auf der Seite,
+   jedes Mal mit einer anderen Aufgabe. */
+
+.sun { height: auto; overflow: visible; }
+.sun path {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* (a) In der Leiste ist die Sonne die Leseanzeige. Sie steht immer
+       vollständig da — ein Logo, dem Strahlen fehlen, sieht kaputt aus.
+       Der Fortschritt ist deshalb Licht: oben glimmen die Strahlen nur,
+       unten stehen sie hell. --sun kommt aus dem Scrollen, --t ist die
+       Schwelle, ab der ein Strahlenpaar aufleuchtet. */
+.sun--progress { width: clamp(68px, 6.2vw, 78px); display: block; }
+.sun--progress path { stroke-width: 1.15px; }
+.js .sun--progress .sun__rays path {
+  opacity: clamp(0.24, calc((var(--sun, 0) - var(--t)) * 6 + 0.24), 1);
+  transition: opacity 450ms var(--ease-soft);
+}
+
+/* (b) Im Hero geht die Sonne auf, während man ankommt.
+       Erst der Horizont, dann die Strahlen von innen nach außen. */
+.sun--hero {
+  width: clamp(112px, 14vw, 172px);
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+  color: oklch(1 0 0 / 0.88);
+}
+.sun--hero path { stroke-width: 1.4px; }
+.js .sun--hero path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .hero.is-ready .sun--hero .sun__horizon path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1000ms var(--ease-soft) 200ms;
+}
+.js .hero.is-ready .sun--hero .sun__rays path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 850ms var(--ease-soft);
+  transition-delay: calc(750ms + var(--d, 0ms));
+}
+
+/* (c) Als Kapitelwechsel liegt sie auf einer Linie: die Linie ist der
+       Horizont, die Strahlen gehen beim Reinscrollen nacheinander auf.
+       Der Horizont im SVG läuft bis an den Rand, damit er die Linie
+       links und rechts nahtlos fortsetzt. */
+/* Der Trenner ist ihr Logo im Querformat: die zwei langen Strahlen laufen
+   nach links und rechts weg, unter der Rundung bleibt der Strich offen,
+   und darüber geht die Sonne auf. Alles steckt im SVG — kein zweiter Strich
+   als ::before, sonst lägen zwei Linien unterschiedlicher Deckung
+   übereinander und der Trenner wirkt gestückelt. */
+.rayline {
+  position: relative;
+  display: grid; justify-items: center;
+}
+.sun--line {
+  width: clamp(300px, 40vw, 520px);
+  max-width: 100%;
+  color: var(--accent);
+}
+.sun--line path { stroke-width: 1px; }
+
+/* Derselbe Ablauf wie im Hero: erst laufen die zwei Strahlen aus der Lücke
+   nach außen, dann geht die Sonne darüber auf. */
+.js .sun--line path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .rayline.is-in .sun--line .sun__open path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1100ms var(--ease-soft) 120ms;
+}
+/* Zusätzlich zum Zeichnen eine Blende: dadurch setzt jeder Strahl weich ein
+   statt mit einer harten Spitze. Das ist der Unterschied zwischen „gezeichnet"
+   und „aufgegangen". */
+.js .sun--line .sun__rays path { opacity: 0; }
+.js .rayline.is-in .sun--line .sun__rays path {
+  stroke-dashoffset: 0;
+  opacity: 1;
+  transition: stroke-dashoffset 850ms var(--ease-soft),
+              opacity 600ms var(--ease-soft);
+  transition-delay: calc(820ms + var(--d, 0ms));
+}
+
+/* (d) Am Schluss geht sie ein letztes Mal auf, groß und mittig. */
+.sun--closing {
+  width: clamp(120px, 15vw, 180px);
+  margin-inline: auto;
+  color: var(--accent);
+}
+.sun--closing path { stroke-width: 1.2px; }
+.js .sun--closing path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .sun--closing.is-in .sun__horizon path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 900ms var(--ease-soft);
+}
+.js .sun--closing.is-in .sun__rays path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 850ms var(--ease-soft);
+  transition-delay: calc(450ms + var(--d, 0ms));
+}
+
+/* (e) Im Footer steht sie voll. Angekommen. */
+.sun--footer {
+  width: clamp(88px, 10vw, 116px);
+  margin-bottom: 1.25rem;
+  color: var(--fg-muted);
+}
+.sun--footer path { stroke-width: 1.1px; }
+
+/* ---------- 5 · BILDER ----------
+   Bilder gehen auf wie die Sonne: von unten herein, während das Motiv
+   von leicht zu groß in seine Ruhelage zurückgeht. */
+
+.shot { position: relative; display: grid; gap: 0.85rem; }
+.shot__clip {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-img);
+  background: var(--surface);
+}
+.shot img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+/* Alle Bilder auf der Seite stehen im selben Format. Sobald zwei
+   Seitenverhältnisse nebeneinanderliegen, wirkt die Seite unruhig. */
+.shot__clip { aspect-ratio: 4 / 5; }
+
+/* Bilder blenden auf, sie bauen sich nicht von unten nach oben auf. Der alte
+   Wisch über clip-path war zu viel Bewegung für ein Porträt — man sieht die
+   Animation und nicht sie. Bleibt: ein ruhiges Aufblenden mit einem Hauch
+   Zoom, damit das Bild ankommt statt einfach dazustehen. */
+.js .shot[data-reveal] .shot__clip { opacity: 0; }
+.js .shot[data-reveal] img { transform: scale(1.03); }
+.js .shot[data-reveal].is-in .shot__clip {
+  opacity: 1;
+  transition: opacity 900ms var(--ease);
+}
+.js .shot[data-reveal].is-in img {
+  transform: none;
+  transition: transform 1400ms var(--ease);
+}
+
+/* ---------- 6 · NAVIGATION ---------- */
+
+/* Über dem dunklen Hero ist die Leiste transparent und hell beschriftet.
+   Sobald die helle Seite darunterschiebt, dreht sie sich um. */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: var(--z-nav);
+  background: transparent;
+  transition: background var(--dur-state) var(--ease-soft),
+              box-shadow var(--dur-state) var(--ease-soft);
+}
+.nav:not(.is-stuck):not(.is-panel) {
+  --fg:        oklch(0.86 0.010 300);
+  --fg-strong: var(--paper);
+  --fg-muted:  oklch(0.76 0.012 300);
+  --rule:      oklch(1 0 0 / 0.3);
+  --bg:        var(--night);
+  --accent:    var(--lilac-lt);
+}
+.nav.is-stuck { background: var(--paper); box-shadow: 0 1px 0 var(--line); }
+/* Bei offenem Menü liegt die Leiste auf hellem Grund und muss mitziehen. */
+.nav.is-panel { background: var(--paper); box-shadow: none; }
+.nav a, .nav button, .nav span, .nav svg {
+  transition: color var(--dur-state) var(--ease-soft),
+              border-color var(--dur-state) var(--ease-soft),
+              background var(--dur-state) var(--ease-soft);
+}
+
+.nav__inner {
+  max-width: var(--shell-out);
+  margin-inline: auto;
+  padding: 0.95rem var(--gutter);
+  display: flex; align-items: center; gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* Ihr Logo ist ein senkrechter Aufbau: Sonne, Horizont, Schriftzug.
+   Genau so steht es auch in der Leiste — nicht nebeneinander. */
+.nav__mark {
+  display: grid; justify-items: center;
+  text-decoration: none; margin-right: auto;
+  color: var(--fg-strong);
+}
+/* Die Linie ist so breit wie der Schriftzug, weil sie in der Rasterspalte
+   auf 100 % geht — die Sonne steht schmaler mittig darüber. */
+.nav__mark-rule {
+  width: 100%; height: 1px;
+  background: currentColor; opacity: 0.3;
+}
+.nav__mark-word {
+  margin-top: 0.28rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem; font-weight: 400; letter-spacing: 0.005em;
+  white-space: nowrap;
+  color: var(--fg-strong);
+}
+
+.nav__links { display: none; gap: clamp(1.25rem, 2.5vw, 2rem); }
+.nav__links a {
+  position: relative;
+  font-family: var(--font-sans);
+  font-size: 0.85rem; letter-spacing: 0.01em;
+  color: var(--fg);
+  text-decoration: none;
+  padding: 0.25rem 0;
+}
+.nav__links a::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px; background: currentColor;
+  transform: scaleX(0); transform-origin: left;
+  transition: transform var(--dur-state) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav__links a:hover { color: var(--fg-strong); }
+  .nav__links a:hover::after { transform: scaleX(1); }
+}
+
+.nav__cta { display: none; }
+
+.nav__toggle {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  min-height: 44px; padding: 0 0.25rem;
+  background: none; border: 0;
+  font-family: var(--font-sans); font-size: 0.8rem;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--fg-strong);
+}
+.nav__toggle-bars { display: grid; gap: 4px; width: 20px; }
+.nav__toggle-bars i {
+  height: 1px; background: currentColor;
+  transition: transform var(--dur-state) var(--ease);
+}
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:first-child { transform: translateY(2.5px) rotate(6deg); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:last-child  { transform: translateY(-2.5px) rotate(-6deg); }
+
+@media (max-width: 30rem) { .nav__mark-word { font-size: 0.72rem; } }
+@media (min-width: 64rem) {
+  .nav__links, .nav__cta { display: flex; }
+  .nav__toggle { display: none; }
+}
+
+/* Mobiles Panel — immer hell, egal wo man es öffnet. */
+.nav-panel {
+  position: fixed; inset: 0;
+  z-index: var(--z-panel);
+  background: var(--paper);
+  color: var(--ink-2);
+  padding: 6rem var(--gutter) 3rem;
+  display: flex; flex-direction: column; gap: 2.5rem;
+  opacity: 0;
+  transition: opacity var(--dur-state) var(--ease-soft);
+}
+/* Ohne diese Zeile überschreibt display:flex das hidden-Attribut — das
+   geschlossene Panel liegt dann unsichtbar über der Seite und schluckt Klicks. */
+.nav-panel[hidden] { display: none; }
+.nav-panel.is-open { opacity: 1; }
+.nav-panel__links { display: grid; gap: 0; }
+.nav-panel__links a {
+  font-family: var(--font-serif);
+  font-size: 1.4rem; font-weight: 300;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+  opacity: 0; transform: translateY(8px);
+}
+.nav-panel.is-open .nav-panel__links a {
+  opacity: 1; transform: none;
+  transition: opacity 500ms var(--ease), transform 500ms var(--ease);
+  transition-delay: calc(60ms + var(--i, 0) * 45ms);
+}
+.nav-panel__cta { align-self: flex-start; }
+
+/* ---------- 7 · HERO ---------- */
+
+/* Sie sitzt rechts im Bild, links ist es leer. Genau da steht ihr Satz.
+   Der Hero bleibt stehen, die helle Seite schiebt sich darüber. */
+.hero {
+  position: sticky; top: 0;
+  z-index: var(--z-base);
+  min-height: 100svh;
+  display: grid; align-items: end;
+  overflow: hidden;
+}
+
+.hero__bg { position: absolute; inset: 0; z-index: var(--z-base); }
+.hero__shift { position: absolute; inset: -10% 0; will-change: transform; }
+.hero__img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  /* Rechts sitzt sie, links bleibt die Wand für den Satz frei.
+     Der Y-Wert ist so gewählt, dass ihr Gesicht auch im Querformat im Bild bleibt. */
+  object-position: 62% 20%;
+}
+
+/* Auf dem Handy ist der Hero hoch und schmal: das Bild füllt die Höhe
+   exakt aus, jede zusätzliche Überhöhe schiebt ihren Kopf aus dem Rahmen.
+   Parallax läuft hier ohnehin nicht, also braucht es auch keine Reserve.
+   Sie sitzt am rechten Rand der Aufnahme, deshalb rechtsbündig ausrichten —
+   jeder Prozentpunkt weniger schneidet ihr Gesicht an. Der Text landet
+   unten links auf dem leeren Boden. */
+@media (max-width: 48rem) {
+  .hero__shift { inset: 0; }
+  .hero__img { object-position: 100% 50%; }
+}
+
+.hero__scrim {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(to top,
+      oklch(0.15 0.026 300 / 0.92) 0%,
+      oklch(0.15 0.026 300 / 0.58) 36%,
+      oklch(0.15 0.026 300 / 0.10) 74%),
+    linear-gradient(to right,
+      oklch(0.15 0.026 300 / 0.62) 0%,
+      oklch(0.15 0.026 300 / 0) 62%);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: var(--z-raised);
+  width: 100%;
+  max-width: var(--shell-out);
+  margin-inline: auto;
+  padding: 0 var(--gutter) clamp(3rem, 8vh, 6rem);
+}
+
+.hero__said {
+  font-family: var(--font-serif);
+  font-size: var(--step-hero);
+  font-weight: 200;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--fg-strong);
+  max-width: 11em;
+}
+
+.hero__after {
+  max-width: 26em;
+  margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-size: var(--step-lead);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--fg);
+}
+
+.hero__down {
+  display: inline-flex; align-items: center; gap: 0.85rem;
+  margin-top: clamp(2.25rem, 5vw, 3.5rem);
+  min-height: 44px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color var(--dur-state) var(--ease-soft);
+}
+.hero__down svg {
+  width: 10px; height: 24px;
+  fill: none; stroke: currentColor; stroke-width: 1;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+@media (hover: hover) and (pointer: fine) {
+  .hero__down:hover { color: var(--fg-strong); }
+}
+
+/* ---------- 8 · DIE KLEINEN ZEICHNUNGEN ---------- */
+
+/* Ein Tropfen. Fällt genau einmal und bleibt dann liegen. */
+.drop {
+  width: 34px; height: 62px;
+  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  overflow: visible;
+}
+.drop__shape, .drop__ripple {
+  transform-box: fill-box; transform-origin: center;
+  opacity: 0;
+}
+.drop__shape { fill: var(--accent); }
+.drop__ripple { fill: none; stroke: var(--accent); stroke-width: 1; }
+
+@keyframes drop-fall {
+  0%   { transform: translateY(-14px) scaleY(0.85); opacity: 0; }
+  18%  { opacity: 1; }
+  100% { transform: translateY(29px) scaleY(1); opacity: 1; }
+}
+@keyframes drop-ripple {
+  from { transform: scale(0.2); opacity: 0.7; }
+  to   { transform: scale(1.05); opacity: 0.4; }
+}
+.js .drop.is-in .drop__shape  { animation: drop-fall 1700ms var(--ease-soft) 300ms forwards; }
+.js .drop.is-in .drop__ripple { animation: drop-ripple 1100ms var(--ease) 1800ms forwards; }
+
+/* ---------- 9 · ANKIS GESCHICHTE ---------- */
+
+/* Diese Sektion liegt über dem Hero und deckt ihn beim Scrollen zu. */
+.story {
+  position: relative;
+  z-index: var(--z-raised);
+  background: var(--paper);
+  padding: clamp(5rem, 11vw, 9.5rem) var(--gutter) var(--section-y);
+  display: grid;
+  gap: clamp(3rem, 6vw, 5rem);
+}
+.story > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
+.story__col { display: grid; gap: clamp(1.25rem, 2.5vw, 1.85rem); }
+
+.story__open {
+  max-width: 15em;
+  margin-bottom: 0.45rem;
+  font-size: clamp(1.5rem, 3.4vw, 2.35rem);
+  font-weight: 300;
+  line-height: 1.24;
+  letter-spacing: -0.018em;
+  color: var(--fg-strong);
+}
+
+.story__text { display: grid; gap: 1.15rem; max-width: var(--measure); }
+.story__mid {
+  font-size: var(--step-lead);
+  font-weight: 400;
+  color: var(--fg-strong);
+}
+
+/* Der Auftakt: ihr Satz, darunter drei Bilder. Sie stehen bewusst nicht auf
+   einer Höhe — drei gleich große Kacheln in einer Reihe sind ein Katalogblatt,
+   drei versetzte Formate sind ein Fotoset, das jemand hingelegt hat. */
+.story__intro { display: grid; gap: clamp(2.25rem, 5vw, 3.5rem); }
+
+.story__trio {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 3vw, 1.25rem);
+  align-items: start;
+}
+/* Auf dem Handy liegt das größte Bild oben über die volle Breite, darunter die
+   zwei kleineren nebeneinander. Drei Hochformate untereinander wären sonst
+   dreimal Scrollen für einen einzigen Gedanken. */
+.story__trio .trio--a { grid-column: 1 / -1; }
+/* Beide sitzen im unteren Drittel ihres Originals. Mittig beschnitten stünde
+   über ihnen eine Handbreit leere Wand beziehungsweise leerer Vorhang. */
+.trio--a img { object-position: 50% 72%; }
+.trio--b img { object-position: 50% 80%; }
+.story__trio .trio--c { margin-top: clamp(1.25rem, 5vw, 2rem); }
+
+@media (min-width: 60rem) {
+  .story__trio {
+    /* Absteigende Größen: das lachende Bild trägt den Blick, die anderen
+       beiden begleiten. Gleich breit wäre wieder eine Reihe. */
+    grid-template-columns: 1.15fr 0.95fr 0.8fr;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+  .story__trio .trio--a { grid-column: auto; margin-top: clamp(2rem, 5vw, 4.5rem); }
+  .story__trio .trio--c { margin-top: clamp(3.5rem, 8vw, 7rem); }
+  .story__intro .story__text { max-width: var(--measure); }
+}
+
+/* Sie kommen nacheinander, nicht gleichzeitig — sonst ist es ein Schnitt und
+   kein Aufblenden. 140 ms sind gerade genug, dass man es merkt, ohne zu warten. */
+.js .trio--b[data-reveal].is-in .shot__clip,
+.js .trio--b[data-reveal].is-in img { transition-delay: 140ms; }
+.js .trio--c[data-reveal].is-in .shot__clip,
+.js .trio--c[data-reveal].is-in img { transition-delay: 280ms; }
+
+.story__pair { display: grid; gap: clamp(2rem, 4vw, 3rem); }
+.story__pair .shot { max-width: 22rem; }
+
+@media (min-width: 60rem) {
+  .story__pair {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.55fr);
+    gap: clamp(2.5rem, 6vw, 5rem);
+    align-items: center;
+  }
+  .story__pair .shot { max-width: none; }
+  /* Ein Kapitel kippt die Seite auf die andere Seite, damit der Blick
+     nicht in einer Spalte kleben bleibt. */
+  .story__pair--flip .shot  { order: 1; }
+  .story__pair--flip .story__text { order: 2; }
+  .story__col--mid { padding-left: 8%; }
+}
+
+/* Der Schluss ihrer Geschichte kommt ohne Bild aus. */
+.story__close { max-width: var(--measure); display: grid; gap: 1.15rem; }
+
+.story__motto {
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+/* ---------- 10 · DAS BAND ---------- */
+
+.band {
+  position: relative; z-index: var(--z-raised);
+  padding: clamp(4.5rem, 10vw, 8.5rem) var(--gutter);
+}
+.band__quote { max-width: var(--shell); margin-inline: auto; }
+.band__quote p {
+  max-width: 13em;
+  font-size: clamp(1.7rem, 4.4vw, 3.2rem);
+  font-weight: 200;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  color: var(--fg-strong);
+}
+.band__quote p + p {
+  margin-top: 0.12em;
+  margin-left: clamp(0rem, 7vw, 6rem);
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ---------- 11 · DAS LICHT ----------
+   Ein Bild, das langsamer läuft als die Seite. Hier wird es hell. */
+
+.light {
+  position: relative; z-index: var(--z-raised);
+  overflow: clip;
+  background: var(--night);
+  min-height: clamp(22rem, 66vh, 40rem);
+  display: grid; align-items: end;
+}
+.light__media { position: absolute; inset: -14% 0; }
+.light__media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  will-change: transform;
+}
+.light__media::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(to top,
+    oklch(0.15 0.026 300 / 0.62) 0%,
+    oklch(0.15 0.026 300 / 0.08) 48%,
+    transparent 70%);
+}
+/* Auf dem Handy ist das Bild sonst hochkant beschnitten und schneidet ihr
+   die Füße ab. 4/3 statt 66vh heißt: fast der ganze Querformat-Ausschnitt
+   steht drin, sie ist komplett zu sehen. Die Reserve für den Parallax
+   schrumpft entsprechend mit — sonst wäre der Gewinn wieder weg. */
+@media (max-width: 48rem) {
+  .light { min-height: 0; aspect-ratio: 4 / 3; }
+  .light__media { inset: -7% 0; }
+}
+
+.light__line {
+  position: relative; z-index: var(--z-raised);
+  width: 100%;
+  max-width: var(--shell-out);
+  margin-inline: auto;
+  padding: 0 var(--gutter) clamp(2.5rem, 6vw, 4.5rem);
+  font-size: clamp(1.45rem, 3.6vw, 2.6rem);
+  font-weight: 200;
+  line-height: 1.15;
+  letter-spacing: -0.022em;
+  color: var(--paper);
+}
+
+/* ---------- 12 · WAS ICH MACHE ---------- */
+
+.ways {
+  position: relative; z-index: var(--z-raised);
+  background: var(--paper);
+  padding: var(--section-y) var(--gutter);
+  display: grid;
+  gap: clamp(3.5rem, 7vw, 6.5rem);
+}
+.ways > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
+
+.way {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: center;
+}
+.way__media { max-width: 22rem; }
+@media (min-width: 56rem) {
+  .way { grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr); }
+  .way__media { max-width: none; }
+  .way--flip .way__media { order: 2; }
+  .way--flip .way__body  { order: 1; }
+}
+
+.way__title {
+  font-family: var(--font-serif);
+  font-size: var(--step-h3);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--fg-strong);
+  margin-bottom: 1rem;
+}
+
+.way__text { max-width: var(--measure); }
+
+.way__tags {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  list-style: none;
+  margin: 1.5rem 0;
+}
+/* Gefüllte Chips statt umrandeter Pillen: weniger Linien auf der Seite. */
+.way__tags li {
+  font-family: var(--font-sans);
+  font-size: 0.78rem; letter-spacing: 0.02em;
+  color: var(--fg);
+  padding: 0.4rem 0.85rem;
+  background: var(--surface);
+  border-radius: 999px;
+}
+
+/* ---------- 13 · KURSPLAN ---------- */
+
+/* Zeiten sind Fakten. Hier wird nichts eingeblendet — nur beim Überfahren
+   zieht sich ein Sonnenstrich durch die Zeile. */
+.schedule {
+  position: relative; z-index: var(--z-raised);
+  padding: var(--section-y) var(--gutter);
+  background: var(--paper);
+}
+.schedule > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
+.schedule .said { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+/* Drei Karten statt einer Tabelle: kein Kopfzeilen-Raster, kein seitliches
+   Scrollen, keine Umbau-Regeln fürs Handy. Die Sektion steht auf Weiß, die
+   Karten liegen als warme Flächen darauf — vorher war es umgekehrt und die
+   Karten sahen aus wie Löcher im grauen Grund. */
+.schedule__list {
+  list-style: none;
+  display: grid;
+  gap: clamp(0.85rem, 1.6vw, 1.25rem);
+}
+@media (min-width: 48rem) {
+  .schedule__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Das Gelb kommt hier nur als Papierton, nicht als Farbe: 22 % Sonnenlicht
+   in Weiß. Damit bleibt die Öle-Sektion der einzige Ort, an dem Gelb wirklich
+   Fläche ist — hier ist es die Wärme des Morgenlichts auf dem Kursplan.
+   Mehr als ein Viertel und die Karten fangen an, um Aufmerksamkeit zu rufen. */
+.course {
+  position: relative;
+  display: grid; align-content: start;
+  gap: 0.35rem;
+  padding: clamp(1.5rem, 2.6vw, 2.15rem);
+  background: var(--sun-wash);
+  border-radius: var(--r-card);
+}
+
+/* Tag und Uhrzeit stehen zusammen in einer Zeile — das ist die Information,
+   nach der man eine Kursliste überfliegt. Der Punkt dazwischen ist gesetzt,
+   nicht getippt, damit er auch bei Umbruch nicht allein stehen bleibt. */
+.course__when {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--fg-strong);
+}
+.course__day::after {
+  content: "\00B7";
+  margin-left: 0.5rem;
+  color: var(--fg-muted);
+}
+
+.course__what {
+  font-family: var(--font-serif);
+  font-size: var(--step-h3);
+  font-weight: 400;
+  letter-spacing: -0.014em;
+  line-height: 1.2;
+  color: var(--fg-strong);
+}
+.course__where {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  color: var(--fg-muted);
+}
+
+/* Der Knopf sitzt immer unten, auch wenn die Karte daneben zwei Zeilen
+   mehr Titel hat. margin-top: auto braucht dafür eine Zeile, die wächst. */
+.course__cta { margin-top: clamp(1.1rem, 2.2vw, 1.6rem); justify-self: start; }
+
+.schedule__foot {
+  /* Die Box behält die Breite der Tabelle, damit beide auf derselben Kante
+     starten. Kurz gehalten wird der Satz über die rechte Innenkante — mit
+     max-width würde er in der Mitte schwimmen. */
+  max-width: var(--shell);
+  /* Die Einrückung darf nie mehr wegnehmen, als tatsächlich da ist —
+     sonst bleibt auf dem Handy pro Zeile ein Wort übrig. */
+  padding-right: clamp(0px, calc(100% - var(--measure)), calc(var(--shell) - var(--measure)));
+  margin-top: clamp(2rem, 4vw, 3rem);
+  font-size: 0.95rem;
+  color: var(--fg-muted);
+}
+
+/* ---------- 14 · FILMSTREIFEN ---------- */
+
+.strip-section {
+  position: relative; z-index: var(--z-raised);
+  background: var(--paper);
+  padding: var(--section-y) 0;
+}
+
+.strip-section__head {
+  max-width: var(--shell-out);
+  margin: 0 auto clamp(2.25rem, 4vw, 3.25rem);
+  padding-inline: var(--gutter);
+  display: flex; flex-wrap: wrap;
+  justify-content: space-between; align-items: flex-end;
+  gap: 1.5rem;
+}
+
+/* Der Satz ist lang, der Handle kurz. Ohne Begrenzung läuft die Überschrift
+   bis an den Link heran und beide kleben zusammen. */
+.strip-section__head .said { max-width: 22ch; }
+
+.strip { position: relative; }
+
+.strip__track {
+  display: flex;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* Sonst zieht ein Wischen am Ende des Streifens die ganze Seite mit —
+     auf iOS löst es sogar die Zurück-Geste aus. */
+  overscroll-behavior-x: contain;
+  padding: 0.25rem var(--gutter);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.strip__track::-webkit-scrollbar { display: none; }
+.strip__track:focus-visible { outline-offset: -2px; }
+.strip__track.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+
+.slide {
+  flex: 0 0 min(74vw, 19rem);
+  scroll-snap-align: center;
+}
+/* Die Bilder bleiben alle farbig — sonst sieht ein Graustich nach Fehler aus.
+   Fokus macht nur ein Hauch Tiefe. */
+.slide .shot__clip {
+  opacity: 0.8;
+  transition: opacity 700ms var(--ease-soft);
+}
+.slide.is-active .shot__clip { opacity: 1; }
+
+.strip__controls {
+  max-width: var(--shell-out);
+  margin: clamp(1.75rem, 3vw, 2.5rem) auto 0;
+  padding-inline: var(--gutter);
+  display: flex; justify-content: flex-end; gap: 0.6rem;
+}
+.strip__btn {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--fg-strong);
+  transition: border-color var(--dur-state) var(--ease-soft),
+              opacity var(--dur-state) var(--ease-soft),
+              transform var(--dur-press) var(--ease-soft);
+}
+.strip__btn svg {
+  width: 18px; height: 18px;
+  fill: none; stroke: currentColor; stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.strip__btn:active { transform: scale(0.94); }
+.strip__btn:disabled { opacity: 0.28; cursor: default; }
+@media (hover: hover) and (pointer: fine) {
+  .strip__btn:not(:disabled):hover { border-color: var(--fg-strong); }
+}
+
+/* ---------- 15 · FORMATE ---------- */
+
+.formats {
+  position: relative; z-index: var(--z-raised);
+  background: var(--paper);
+  padding: var(--section-y) var(--gutter);
+}
+.formats > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
+
+.rayline--top { margin-bottom: clamp(3rem, 6vw, 5rem); }
+
+/* Vier ruhige Flächen statt einer Liste mit Trennlinien. Eine Liste aus
+   Label-Spalte und Text liest sich wie ein Inhaltsverzeichnis. */
+.formats__list {
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+  display: grid;
+  gap: clamp(0.85rem, 1.6vw, 1.25rem);
+}
+/* Zwei Karten nebeneinander, nicht vier. Vier schmale Spalten sind wieder
+   ein Raster — zwei geben jedem Format Platz. */
+@media (min-width: 48rem) {
+  .formats__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.format {
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  padding: clamp(1.5rem, 2.6vw, 2.15rem);
+  background: var(--surface);
+  border-radius: var(--r-card);
+}
+
+.format__name {
+  font-family: var(--font-serif);
+  font-size: var(--step-h3);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--fg-strong);
+}
+.format__body { display: grid; gap: 0.7rem; }
+.format__meta {
+  font-family: var(--font-sans);
+  font-size: 0.8rem; letter-spacing: 0.02em;
+  color: var(--fg-muted);
+}
+
+/* ---------- 16 · ÖLE ---------- */
+
+/* Die Sektion läuft in drei Blöcken: Auftakt, dann die drei Öle neben dem
+   Bild, dann der Ablauf mit dem Bild auf der anderen Seite. Vorher stand
+   hier eine Textspalte mit zwei Fotos daneben — die Bilder kamen nicht an,
+   weil sie neben einer langen Spalte klein bleiben mussten. */
+.oils { position: relative; z-index: var(--z-raised); padding: var(--section-y) var(--gutter); }
+.oils > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
+
+.oils__head { display: grid; }
+.oils__lead {
+  max-width: var(--measure);
+  margin-top: clamp(1.1rem, 2.2vw, 1.6rem);
+  font-size: var(--step-lead);
+  line-height: 1.55;
+}
+
+/* Bild und die drei Öle. align-items: center, weil die Liste kürzer ist als
+   das Bild und mit end sonst ein Loch entsteht. */
+.oils__duo,
+.oils__how {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: center;
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+@media (min-width: 52rem) {
+  .oils__duo { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr); }
+  .oils__how { grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); }
+}
+/* Auf dem Handy stehen die Fotos vor dem Text, nicht danach — sonst kommen sie
+   erst nach dem Knopf und werden nie gesehen. */
+@media (max-width: 52rem) {
+  .oils__how .oils__pair { order: -1; }
+}
+
+/* Zwei kleinere Bilder neben ihrem Satz, das zweite abgesetzt. Nebeneinander
+   auf gleicher Höhe wären es zwei Kacheln; versetzt sind es zwei Aufnahmen. */
+.oils__pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  align-items: start;
+}
+.oils__pair .oils__shot:last-child { margin-top: clamp(1.5rem, 5vw, 3.25rem); }
+
+/* Drei weiche Kacheln. Ihr eigener Satz war eine Aufzählung in einer Zeile —
+   als drei Flächen kann man ihn lesen, statt ihn zu überfliegen. */
+.oils__three { list-style: none; display: grid; gap: 0.7rem; }
+.oil {
+  display: grid; gap: 0.3rem;
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+  background: color-mix(in oklch, var(--surface) 62%, transparent);
+  border-radius: var(--r-card);
+}
+.oil__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem; font-weight: 400;
+  letter-spacing: -0.006em;
+  color: var(--fg-strong);
+}
+.oil__use { font-size: 0.94rem; line-height: 1.55; color: var(--fg); }
+
+.oils__how-body { display: grid; max-width: var(--measure); }
+.oils__said {
+  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
+  font-weight: 200;
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+  color: var(--fg-strong);
+}
+.oils__note { margin-top: 0.9rem; }
+
+/* Drei Karten über die volle Breite, nicht drei Zeilen unter einer Textspalte.
+   Heller als der gelbe Grund — die Öl-Kacheln darüber sind dunkler als der
+   Grund. So sind beide Gruppen auf einen Blick auseinanderzuhalten, ohne dass
+   eine zweite Farbe dazukommt. Reines Weiß wäre auf dem Gelb zu hart. */
+.oils__steps {
+  list-style: none;
+  display: grid;
+  gap: clamp(0.7rem, 1.4vw, 1rem);
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+@media (min-width: 48rem) {
+  .oils__steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.step {
+  display: grid; align-content: start; gap: 0.3rem;
+  padding: clamp(1.35rem, 2.4vw, 1.9rem);
+  background: var(--sun-card);
+  border-radius: var(--r-card);
+}
+.step__name {
+  font-family: var(--font-serif);
+  font-size: 1.1rem; font-weight: 400;
+  letter-spacing: -0.006em;
+  color: var(--fg-strong);
+}
+.step__text { font-size: 0.94rem; line-height: 1.55; color: var(--fg); }
+
+.oils__actions {
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  margin-top: clamp(2rem, 3.5vw, 2.75rem);
+}
+
+/* ---------- 17 · DER SCHLUSS ----------
+   Statt einer zweiten Seite mit Formular steht hier nur die Sonne,
+   ein Satz und eine Tür. Der Rest passiert im Overlay. */
+
+.closing {
+  position: relative; z-index: var(--z-raised);
+  background: var(--paper);
+  /* Volle Breite, sonst blitzt der klebende Hero am Rand durch. */
+  padding: clamp(4.5rem, 9vw, 7.5rem) max(var(--gutter), (100% - var(--shell)) / 2);
+  display: grid; justify-items: center; gap: 1rem;
+  text-align: center;
+}
+.closing__said {
+  max-width: 13em;
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+  font-family: var(--font-serif);
+  font-size: var(--step-said);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--fg-strong);
+  text-wrap: balance;
+}
+.closing__note {
+  max-width: 34ch;
+  font-size: 0.98rem;
+  color: var(--fg-muted);
+}
+.closing .btn { margin-top: 0.85rem; }
+
+/* ---------- 18 · DER FUNNEL ----------
+   Zwei Schritte in einem Overlay. Ein natives <dialog> bringt
+   Fokusfalle, Escape und Hintergrundsperre schon mit. */
+
+.funnel {
+  width: min(27rem, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(88svh, 46rem);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-card);
+  background: var(--paper);
+  color: var(--ink-2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: 0 24px 70px oklch(0.175 0.028 300 / 0.28);
+}
+.funnel::backdrop {
+  background: oklch(0.175 0.028 300 / 0.55);
+  backdrop-filter: blur(3px);
+}
+@keyframes funnel-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.985); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes funnel-veil { from { opacity: 0; } to { opacity: 1; } }
+.funnel[open] { animation: funnel-in 420ms var(--ease) both; }
+.funnel[open]::backdrop { animation: funnel-veil 320ms var(--ease-soft) both; }
+
+.funnel__sheet { position: relative; padding: clamp(1.75rem, 5vw, 2.75rem); }
+
+.funnel__close {
+  position: absolute; top: 0.4rem; right: 0.4rem;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: var(--fg-muted);
+  transition: color var(--dur-state) var(--ease-soft);
+}
+.funnel__close svg {
+  width: 15px; height: 15px;
+  fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round;
+}
+
+.funnel__step {
+  font-family: var(--font-sans);
+  font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.funnel__title {
+  margin: 0.55rem 2.5rem clamp(1.5rem, 3.5vw, 2rem) 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 4.5vw, 1.95rem);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.018em;
+  color: var(--fg-strong);
+  text-wrap: balance;
+}
+/* Die Überschrift nimmt beim Schrittwechsel den Fokus auf, soll ihn aber
+   nicht als Rahmen zeigen — sie ist kein Bedienelement. */
+.funnel__title:focus { outline: none; }
+
+/* Beide Schritte liegen im selben Sheet. `.form` setzt display: grid —
+   das schlägt das hidden-Attribut, deshalb hier ausdrücklich abschalten. */
+.funnel__pane[hidden] { display: none; }
+
+/* Drei anfassbare Flächen statt Zeilen mit Trennstrichen. Versalien und
+   Haarlinien waren der Grund, warum der Funnel wie ein Formular im
+   Magazin aussah. Beschreibungen stehen bewusst nicht darunter: bei drei
+   Wörtern erklärt sich die Wahl von selbst, und das Sheet bleibt klein. */
+.funnel__topics { list-style: none; display: grid; gap: 0.5rem; }
+.topic {
+  position: relative;
+  width: 100%;
+  display: flex; align-items: center; gap: 0.85rem;
+  text-align: left;
+  padding: 0.9rem 2.75rem 0.9rem 1rem;
+  background: var(--surface);
+  border-radius: var(--r-img);
+  transition: background var(--dur-state) var(--ease-soft);
+}
+.topic__icon {
+  width: 22px; height: 22px; flex: none;
+  fill: none; stroke: currentColor; stroke-width: 1.2;
+  stroke-linecap: round; stroke-linejoin: round;
+  color: var(--accent);
+}
+.topic b {
+  font-family: var(--font-serif);
+  font-size: 1.05rem; font-weight: 400;
+  letter-spacing: -0.005em;
+  color: var(--fg-strong);
+}
+.topic::after {
+  content: "\2192";
+  position: absolute; right: 1.15rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent);
+  transition: transform var(--dur-state) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .funnel__close:hover { color: var(--fg-strong); }
+  .topic:hover { background: color-mix(in oklch, var(--accent) 9%, var(--surface)); }
+  .topic:hover::after { transform: translate(4px, -50%); }
+}
+
+.funnel__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+}
+.funnel__back {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.15rem;
+  transition: color var(--dur-state) var(--ease-soft);
+}
+.funnel__back::before { content: "\2190\00a0"; }
+@media (hover: hover) and (pointer: fine) {
+  .funnel__back:hover { color: var(--fg-strong); }
+}
+
+/* Auf dem Handy ist der Funnel kein Kasten in der Mitte, sondern ein Blatt,
+   das von unten hochkommt: erreichbar mit dem Daumen, vertraut aus jeder
+   App, und der Weg der Bewegung erklärt, wie man es wieder schließt. */
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to   { transform: none; }
+}
+@media (max-width: 40rem) {
+  .funnel {
+    width: 100%;
+    max-height: 92svh;
+    margin: auto auto 0;
+    border-radius: 18px 18px 0 0;
+  }
+  .funnel[open] { animation: sheet-in 460ms var(--ease) both; }
+  .funnel__sheet {
+    padding: 2.25rem 1.35rem;
+    padding-bottom: max(2.25rem, env(safe-area-inset-bottom) + 1.5rem);
+  }
+  /* Der Griff sagt ohne Worte, dass das Blatt beweglich ist. */
+  .funnel__sheet::before {
+    content: "";
+    position: absolute; top: 0.7rem; left: 50%;
+    transform: translateX(-50%);
+    width: 38px; height: 4px;
+    border-radius: 999px;
+    background: var(--rule);
+  }
+  .funnel__close { top: 1.35rem; right: 0.6rem; }
+  .funnel__step  { margin-top: 0.4rem; }
+}
+
+/* ---------- 19 · FORMULAR ----------
+   Nur Unterstriche, keine Kästen. Lebt im Funnel-Overlay. */
+.form { display: grid; gap: 1.5rem; }
+
+.field { display: grid; gap: 0.4rem; }
+.field label {
+  font-family: var(--font-sans);
+  font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fg-strong);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line-2);
+  border-radius: 0;
+  transition: border-color var(--dur-state) var(--ease-soft);
+}
+.field textarea { resize: vertical; min-height: 7rem; }
+.field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+                    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 10px) 1.25rem, calc(100% - 5px) 1.25rem;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 1.75rem;
+}
+.field input::placeholder,
+.field textarea::placeholder { color: var(--fg-muted); opacity: 0.7; }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--accent); outline: none; }
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.field.is-invalid input,
+.field.is-invalid textarea { border-color: var(--alarm); }
+.field__error {
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--alarm);
+}
+
+.form__note, .form__status {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--fg-muted);
+}
+.form__status {
+  padding: 0.85rem 1.1rem;
+  background: var(--tint);
+  border-radius: 3px;
+  color: var(--fg);
+}
+.form.is-sending .btn__label { opacity: 0.6; }
+
+/* ---------- 20 · FOOTER ---------- */
+
+.footer {
+  position: relative; z-index: var(--z-raised);
+  padding: clamp(3.5rem, 7vw, 5.5rem) var(--gutter);
+}
+.footer__inner {
+  max-width: var(--shell);
+  margin-inline: auto;
+  display: grid; gap: 2.5rem;
+}
+@media (min-width: 56rem) {
+  .footer__inner {
+    grid-template-columns: 1fr auto auto;
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+  .footer__links { display: contents; }
+}
+.footer__name {
+  font-size: 1.35rem; font-weight: 300;
+  color: var(--fg-strong);
+}
+.footer__role {
+  margin-top: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.footer__nav, .footer__legal { display: grid; gap: 0.65rem; }
+
+/* Auf dem Handy steht der Footer mittig, und die beiden Linklisten stehen
+   nebeneinander. Untereinander wären es sechs Zeilen Leerlauf am Seitenende. */
+@media (max-width: 56rem) {
+  .footer__inner { justify-items: center; text-align: center; gap: 2rem; }
+  .footer__brand { display: grid; justify-items: center; }
+  .footer__links {
+    width: 100%;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem 1.5rem;
+    align-items: start;
+  }
+  .footer__nav, .footer__legal { gap: 0.9rem; }
+  .footer a { justify-self: center; }
+}
+.footer a {
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  color: var(--fg);
+  text-decoration: none;
+  justify-self: start;
+  border-bottom: 1px solid transparent;
+  transition: color var(--dur-state) var(--ease-soft),
+              border-color var(--dur-state) var(--ease-soft);
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover { color: var(--fg-strong); border-color: var(--rule); }
+}
+
+/* ---------- 21 · BEWEGUNG ---------- */
+
+/* Grundsatz: ohne JS ist alles sichtbar. Alle Reveals hängen an .js.
+   Bilder haben ihre eigene Bewegung (siehe .shot) und sind hier ausgenommen. */
+.js [data-reveal]:not([data-wash]):not(.shot) { opacity: 0; transform: translateY(12px); }
+.js [data-reveal]:not([data-wash]):not(.shot).is-in {
+  opacity: 1; transform: none;
+  transition: opacity var(--dur-reveal) var(--ease),
+              transform var(--dur-reveal) var(--ease);
+}
+
+/* Wortweises Auftauchen. Liest sich wie Sprechen, nicht wie Effekt.
+   Die Wörter werden erst per JS in .w > i zerlegt. */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.w > i { display: inline-block; font-style: inherit; }
+.js .w > i { transform: translateY(115%); opacity: 0; }
+.js [data-wash].is-in .w > i,
+.js .hero.is-ready [data-wash] .w > i {
+  transform: none; opacity: 1;
+  transition: transform 950ms var(--ease), opacity 700ms var(--ease-soft);
+  transition-delay: calc(var(--i, 0) * 65ms);
+}
+
+/* Das Hero-Bild kommt nicht geschoben, sondern kaum merklich heran. */
+.js .hero__bg { opacity: 0; }
+.js .hero.is-ready .hero__bg {
+  opacity: 1;
+  transition: opacity 1600ms var(--ease-soft);
+}
+.js .hero__after,
+.js .hero__down { opacity: 0; }
+.js .hero.is-ready .hero__after,
+.js .hero.is-ready .hero__down {
+  opacity: 1;
+  transition: opacity 1000ms var(--ease-soft);
+}
+.js .hero.is-ready .hero__after { transition-delay: 900ms; }
+.js .hero.is-ready .hero__down  { transition-delay: 1300ms; }
+
+/* ---------- 22 · ANTIPPEN ----------
+   Am Finger gibt es kein Hover. Ohne eigene Rückmeldung fühlt sich jeder
+   Tipp an, als wäre nichts passiert — genau das lässt eine Seite mobil
+   tot wirken. Die Antwort kommt schnell (120 ms) und geht langsam zurück. */
+
+.topic,
+.nav-panel__links a,
+.footer a,
+.link-arrow,
+.nav__mark {
+  transition: opacity var(--dur-state) var(--ease-soft),
+              transform var(--dur-state) var(--ease),
+              background-color var(--dur-state) var(--ease-soft),
+              color var(--dur-state) var(--ease-soft);
+}
+.topic:active {
+  background: color-mix(in oklch, var(--accent) 12%, var(--surface));
+  transform: scale(0.985);
+  transition-duration: var(--dur-press);
+}
+.nav-panel__links a:active,
+.footer a:active,
+.link-arrow:active,
+.nav__mark:active {
+  opacity: 0.55;
+  transition-duration: var(--dur-press);
+}
+.funnel__close:active,
+.nav__toggle:active { transform: scale(0.9); }
+
+/* Die Zeile im Kursplan ist ein Ziel, kein Text — auf dem Handy ist sie
+   der ganze Block. */
+@media (hover: none) {
+  .schedule__table tbody tr:active { background: color-mix(in oklch, var(--sun-deep) 8%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js [data-reveal],
+  .js .nav-panel__links a { transform: none; }
+  .js .w > i { transform: none; opacity: 1; }
+  .js .shot[data-reveal] .shot__clip { opacity: 1; }
+  .js .shot[data-reveal] img { transform: none; }
+  .js .sun--hero path,
+  .js .sun--line path,
+  .js .sun--closing path { stroke-dashoffset: 0; }
+  /* Ohne diese Zeile bliebe der Trenner halb unsichtbar: die Strahlen
+     stehen sonst auf Deckung 0. */
+  .js .sun--line .sun__rays path { opacity: 1; }
+  .js .drop .drop__shape { animation: none; opacity: 1; }
+  .js .drop .drop__ripple { animation: none; opacity: 0.4; }
+  .btn:active, .strip__btn:active, .topic:active,
+  .funnel__close:active, .nav__toggle:active { transform: none; }
+  .link-arrow:hover::after { transform: none; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 200ms !important;
+  }
+}
+
+/* ---------- 22 · RECHTSSEITEN ---------- */
+
+.legal {
+  max-width: 42rem;
+  margin-inline: auto;
+  padding: clamp(3rem, 8vw, 6rem) var(--gutter) clamp(5rem, 10vw, 8rem);
+}
+.legal__back { margin-bottom: clamp(2.5rem, 5vw, 4rem); }
+.legal h1 {
+  font-size: var(--step-said);
+  font-weight: 300;
+  letter-spacing: -0.012em;
+  color: var(--fg-strong);
+  margin-bottom: 2rem;
+}
+.legal h2 {
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--fg-strong);
+  margin: 2.75rem 0 0.75rem;
+}
+.legal h3 {
+  font-family: var(--font-sans);
+  font-size: 0.78rem; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--fg-muted);
+  margin: 1.75rem 0 0.5rem;
+}
+.legal p, .legal address, .legal ul { margin-bottom: 1rem; font-size: 0.98rem; }
+.legal address { font-style: normal; }
+.legal ul { padding-left: 1.15rem; }
+.legal li { margin-bottom: 0.35rem; }
+
+.todo {
+  background: color-mix(in oklch, var(--sun-deep) 30%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklch, var(--sun-deep) 30%, transparent);
+  border-radius: 2px;
+  color: var(--fg-strong);
+}
+
+/* ---------- 23 · DRUCK ---------- */
+
+@media print {
+  .nav, .nav-panel, .hero__down, .strip__controls, .funnel { display: none; }
+  body { background: #fff; color: #000; }
+  .hero { position: static; min-height: 0; }
+  .shot, .light { display: none; }
+}

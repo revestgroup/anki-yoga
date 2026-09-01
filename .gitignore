@@ -1,0 +1,5 @@
+.DS_Store
+
+# Die Rohdateien aus Instagram. Sie sind byte-identisch mit den benannten
+# Kopien in assets/img/ und werden von der Seite nicht referenziert.
+assets/Anki*.jpeg
