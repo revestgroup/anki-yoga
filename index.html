@@ -32,30 +32,34 @@
 <header class="nav" id="nav">
   <div class="nav__inner">
     <a class="nav__mark" href="#top" aria-label="Anki_Yoga.and.Oils, zum Seitenanfang">
-      <!-- Ihr Logo als Zeichnung — und gleichzeitig die Leseanzeige.
-           Oben auf der Seite ist nur der Horizont da. Je weiter man kommt,
-           desto mehr Strahlen stehen. Unten steht die volle Sonne.
-           Sie heißt Strahl. Das ist keine Dekoration, das ist ihr Name. -->
-      <!-- Der Ausschnitt endet auf y 56 — genau dort, wo der Horizont liegt.
-           Die Linie darunter ist echtes HTML und damit exakt so breit wie
-           der Schriftzug. So steht es auch in ihrem Logo. -->
-      <svg class="sun sun--progress" id="sunMark" viewBox="0 0 120 56" aria-hidden="true">
+      <!-- Ihr Logo als Zeichnung. Sie heißt Strahl — das ist keine
+           Dekoration, das ist ihr Name. Alle Striche gleich stark:
+           unterschiedlich helle Strahlen liest man als unterschiedlich dick.
+           Der Strich gehört zur Zeichnung, nicht daneben: unter der Rundung
+           der Sonne bleibt er offen, und beide Hälften laufen nach außen weg.
+           Genau wie in ihrem Logo und wie in der Strahlenlinie weiter unten.
+           Der Ausschnitt reicht deshalb links und rechts über die Strahlen
+           hinaus, damit die Linie so breit wird wie der Schriftzug. -->
+      <svg class="sun sun--progress" id="sunMark" viewBox="-24 0 168 58" aria-hidden="true">
+        <g class="sun__open">
+          <path pathLength="1" d="M42 56H-20"/>
+          <path pathLength="1" d="M78 56h62"/>
+        </g>
         <g class="sun__rays">
-          <path style="--t:.00" pathLength="1" d="M60 39V7"/>
-          <path style="--t:.17" pathLength="1" d="M64.4 39.58 68.28 25.09"/>
-          <path style="--t:.17" pathLength="1" d="M55.6 39.58 51.72 25.09"/>
-          <path style="--t:.33" pathLength="1" d="M68.5 41.28 83.5 15.3"/>
-          <path style="--t:.33" pathLength="1" d="M51.5 41.28 36.5 15.3"/>
-          <path style="--t:.50" pathLength="1" d="M72.02 43.98 83.33 32.67"/>
-          <path style="--t:.50" pathLength="1" d="M47.98 43.98 36.67 32.67"/>
-          <path style="--t:.66" pathLength="1" d="M74.72 47.5 101.57 32"/>
-          <path style="--t:.66" pathLength="1" d="M45.28 47.5 18.43 32"/>
-          <path style="--t:.83" pathLength="1" d="M76.42 51.6 92.84 47.2"/>
-          <path style="--t:.83" pathLength="1" d="M43.58 51.6 27.16 47.2"/>
+          <path pathLength="1" d="M60 39V7"/>
+          <path pathLength="1" d="M64.4 39.58 68.28 25.09"/>
+          <path pathLength="1" d="M55.6 39.58 51.72 25.09"/>
+          <path pathLength="1" d="M68.5 41.28 83.5 15.3"/>
+          <path pathLength="1" d="M51.5 41.28 36.5 15.3"/>
+          <path pathLength="1" d="M72.02 43.98 83.33 32.67"/>
+          <path pathLength="1" d="M47.98 43.98 36.67 32.67"/>
+          <path pathLength="1" d="M74.72 47.5 101.57 32"/>
+          <path pathLength="1" d="M45.28 47.5 18.43 32"/>
+          <path pathLength="1" d="M76.42 51.6 92.84 47.2"/>
+          <path pathLength="1" d="M43.58 51.6 27.16 47.2"/>
         </g>
       </svg>
 
-      <span class="nav__mark-rule" aria-hidden="true"></span>
       <span class="nav__mark-word">Anki_Yoga.and.Oils</span>
     </a>
 
@@ -271,19 +275,21 @@
       </span>
     </figure>
     <div class="way__body">
+      <p class="way__kicker">Feste Stunden, jede Woche</p>
       <h3 class="way__title">Somatic Yin Yoga</h3>
       <p class="way__text">
         Haltungen, die drei bis fünf Minuten bleiben. Das geht ans Bindegewebe und ans
         Nervensystem, nicht an den Muskel. Du musst nichts können. Du merkst, was da ist,
         und bleibst.
       </p>
-      <ul class="way__tags">
-        <li>Somatic Yin</li>
-        <li>Yin</li>
-        <li>Hatha</li>
-        <li>Vinyasa</li>
-      </ul>
-      <a class="link-arrow" href="#kursplan">Zu den festen Stunden</a>
+      <p class="way__meta">
+        Sonntags in Rottenacker, dienstags und donnerstags in Ehingen &middot;
+        Somatic Yin, Yin, Hatha, Vinyasa &middot; kleine Gruppen
+      </p>
+      <div class="way__actions">
+        <button class="btn btn--sm btn--primary" type="button" data-funnel="Yoga">Platz anfragen</button>
+        <a class="link-arrow link-arrow--sm" href="#kursplan">Zeiten ansehen</a>
+      </div>
     </div>
   </article>
 
@@ -294,18 +300,20 @@
       </span>
     </figure>
     <div class="way__body">
+      <p class="way__kicker">Ein paarmal im Jahr</p>
       <h3 class="way__title">Retreats &amp; besondere Formate</h3>
       <p class="way__text">
         Ein Nachmittag, ein Wochenende, sieben Nächte. Mal mit Keramik, mal mit Hypnose,
         mal mit einem Glas Wein. Und manchmal nur mit Stille und dem Allgäu vor der Tür.
       </p>
-      <ul class="way__tags">
-        <li>Yoga meets Keramik</li>
-        <li>Yoga-Hypnose</li>
-        <li>Rauhnächte</li>
-        <li>Retreat</li>
-      </ul>
-      <a class="link-arrow" href="#formate">Alle Formate ansehen</a>
+      <p class="way__meta">
+        Halbe Tage, Abende und Wochenenden &middot; Ulm, Ehingen und Allgäu &middot;
+        begrenzte Plätze
+      </p>
+      <div class="way__actions">
+        <button class="btn btn--sm btn--primary" type="button" data-funnel="Yoga">Auf die Liste</button>
+        <a class="link-arrow link-arrow--sm" href="#formate">Alle Formate ansehen</a>
+      </div>
     </div>
   </article>
 
@@ -316,17 +324,20 @@
       </span>
     </figure>
     <div class="way__body">
+      <p class="way__kicker">Beratung und Begleitung</p>
       <h3 class="way__title">Ätherische Öle</h3>
       <p class="way__text">
         Ich arbeite mit dōTERRA. Schlaf, Fokus, Ruhe, Haut. Ich zeige dir, welches Öl wofür
         gut ist, und du probierst aus, ob es dir was bringt.
       </p>
-      <ul class="way__tags">
-        <li>Erstgespräch kostenlos</li>
-        <li>Öl-Wochen</li>
-        <li>Begleitung danach</li>
-      </ul>
-      <a class="link-arrow" href="#oele">Wie das abläuft</a>
+      <p class="way__meta">
+        Erstgespräch kostenlos &middot; Öl-Wochen zum Ausprobieren &middot;
+        Begleitung danach
+      </p>
+      <div class="way__actions">
+        <button class="btn btn--sm btn--primary" type="button" data-funnel="&#214;le">Beratung anfragen</button>
+        <a class="link-arrow link-arrow--sm" href="#oele">Wie das abläuft</a>
+      </div>
     </div>
   </article>
 </section>
@@ -542,6 +553,14 @@
     </div>
   </dl>
 
+  <!-- Die Termine stehen nicht fest genug für einen Kalender. Wer eins davon
+       will, sagt Bescheid und hört sich, sobald es losgeht. -->
+  <p class="formats__foot" data-reveal>
+    Termine gebe ich zuerst an die weiter, die mir Bescheid gesagt haben.
+  </p>
+  <button class="btn btn--primary formats__cta" type="button" data-funnel="Yoga" data-reveal>
+    Sag mir, was dich interessiert
+  </button>
 </section>
 
 <!-- ============ 9 · ÖLE — die Sonne steht oben ============

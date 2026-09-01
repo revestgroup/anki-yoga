@@ -84,25 +84,15 @@
 
   /* ---------- Navigation: hell über dem Hero, dunkel darunter ---------- */
 
-  const nav     = $('#nav');
-  const sunMark = $('#sunMark');
+  const nav = $('#nav');
 
-  if (nav || sunMark) {
+  if (nav) {
     // Der Hero klebt am oberen Rand. Ab dem Punkt, an dem die helle Seite
     // ihn zudeckt, dreht die Leiste ihre Farben um.
     const flipAt = () => (hero ? hero.offsetHeight - nav.offsetHeight : 8);
 
-    // Die Sonne im Logo ist zugleich die Leseposition: oben nur der Horizont,
-    // unten steht sie ganz am Himmel. Jeder Strahl hat seine eigene Schwelle.
-    const sunProgress = () => {
-      const doc = document.documentElement;
-      const max = doc.scrollHeight - window.innerHeight;
-      return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    };
-
     const syncTop = () => {
-      if (nav) nav.classList.toggle('is-stuck', window.scrollY > flipAt());
-      if (sunMark) sunMark.style.setProperty('--sun', sunProgress().toFixed(4));
+      nav.classList.toggle('is-stuck', window.scrollY > flipAt());
     };
 
     let navTicking = false;
