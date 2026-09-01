@@ -468,12 +468,15 @@ a {
   width: 100%; height: 1px;
   background: currentColor; opacity: 0.3;
 }
+/* Die Sonne darüber ist eine Haarlinie. Der Schriftzug muss dieselbe
+   Strichstärke haben, sonst wirkt er wie draufgeklebt: leichtester Schnitt,
+   weite Laufweite, und nicht das kräftigste Weiß. */
 .nav__mark-word {
-  margin-top: 0.28rem;
+  margin-top: 0.34rem;
   font-family: var(--font-sans);
-  font-size: 0.72rem; font-weight: 400; letter-spacing: 0.005em;
+  font-size: 0.66rem; font-weight: 300; letter-spacing: 0.07em;
   white-space: nowrap;
-  color: var(--fg-strong);
+  color: var(--fg);
 }
 
 .nav__links { display: none; gap: clamp(1.25rem, 2.5vw, 2rem); }
@@ -515,7 +518,7 @@ a {
 .nav__toggle[aria-expanded="true"] .nav__toggle-bars i:first-child { transform: translateY(2.5px) rotate(6deg); }
 .nav__toggle[aria-expanded="true"] .nav__toggle-bars i:last-child  { transform: translateY(-2.5px) rotate(-6deg); }
 
-@media (max-width: 30rem) { .nav__mark-word { font-size: 0.72rem; } }
+@media (max-width: 30rem) { .nav__mark-word { font-size: 0.64rem; letter-spacing: 0.055em; } }
 @media (min-width: 64rem) {
   .nav__links, .nav__cta { display: flex; }
   .nav__toggle { display: none; }
@@ -796,18 +799,21 @@ a {
 /* ---------- 11 · DAS LICHT ----------
    Ein Bild, das langsamer läuft als die Seite. Hier wird es hell. */
 
+/* Die Sektion übernimmt das Seitenverhältnis der Aufnahme (1600 × 1066).
+   Dadurch ist das Bild vollständig zu sehen, auf jeder Breite, statt oben
+   und unten beschnitten zu werden. Auf dem Handy läuft es randlos über die
+   ganze Breite mit. */
 .light {
   position: relative; z-index: var(--z-raised);
   overflow: clip;
   background: var(--night);
-  min-height: clamp(22rem, 66vh, 40rem);
+  aspect-ratio: 1600 / 1066;
   display: grid; align-items: end;
 }
-.light__media { position: absolute; inset: -14% 0; }
+.light__media { position: absolute; inset: 0; }
 .light__media img {
   width: 100%; height: 100%;
   object-fit: cover;
-  will-change: transform;
 }
 .light__media::after {
   content: "";
@@ -817,15 +823,6 @@ a {
     oklch(0.15 0.026 300 / 0.08) 48%,
     transparent 70%);
 }
-/* Auf dem Handy ist das Bild sonst hochkant beschnitten und schneidet ihr
-   die Füße ab. 4/3 statt 66vh heißt: fast der ganze Querformat-Ausschnitt
-   steht drin, sie ist komplett zu sehen. Die Reserve für den Parallax
-   schrumpft entsprechend mit — sonst wäre der Gewinn wieder weg. */
-@media (max-width: 48rem) {
-  .light { min-height: 0; aspect-ratio: 4 / 3; }
-  .light__media { inset: -7% 0; }
-}
-
 .light__line {
   position: relative; z-index: var(--z-raised);
   width: 100%;
@@ -1267,7 +1264,7 @@ a {
 .funnel[open] { animation: funnel-in 420ms var(--ease) both; }
 .funnel[open]::backdrop { animation: funnel-veil 320ms var(--ease-soft) both; }
 
-.funnel__sheet { position: relative; padding: clamp(1.75rem, 5vw, 2.75rem); }
+.funnel__sheet { position: relative; padding: clamp(1.5rem, 4vw, 2.25rem); }
 
 .funnel__close {
   position: absolute; top: 0.4rem; right: 0.4rem;
@@ -1288,7 +1285,7 @@ a {
   color: var(--fg-muted);
 }
 .funnel__title {
-  margin: 0.55rem 2.5rem clamp(1.5rem, 3.5vw, 2rem) 0;
+  margin: 0.5rem 2.5rem clamp(1.1rem, 3vw, 1.5rem) 0;
   font-family: var(--font-serif);
   font-size: clamp(1.45rem, 4.5vw, 1.95rem);
   font-weight: 300;
@@ -1345,6 +1342,57 @@ a {
   .topic:hover::after { transform: translate(4px, -50%); }
 }
 
+/* Schritt 3: die Bestätigung. Nach dem Absenden passiert sonst sichtbar
+   nichts — hier geht stattdessen die Sonne auf, wie im Hero. */
+.funnel__done {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(1.1rem, 3vw, 1.5rem);
+  padding: clamp(0.5rem, 2vw, 1.25rem) 0 0.25rem;
+}
+.sun--sent { width: clamp(104px, 26vw, 138px); color: var(--accent); }
+.sun--sent path { stroke-width: 1.3px; }
+
+.funnel__done-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 3vw, 1.2rem);
+  font-weight: 300;
+  line-height: 1.45;
+  color: var(--fg-strong);
+  max-width: 24ch;
+  text-wrap: balance;
+}
+.funnel__done-btn { min-width: 11rem; }
+
+/* Die Bestätigung wird von `hidden` auf sichtbar geschaltet. Eine Transition
+   würde dabei nicht feuern, eine Animation startet neu — deshalb `animation`. */
+@keyframes sun-draw { to { stroke-dashoffset: 0; } }
+@keyframes done-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.js .sun--sent path { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.js .funnel__done:not([hidden]) .sun--sent .sun__horizon path {
+  animation: sun-draw 900ms var(--ease-soft) 120ms both;
+}
+.js .funnel__done:not([hidden]) .sun--sent .sun__rays path {
+  animation: sun-draw 620ms var(--ease-soft) both;
+  animation-delay: calc(560ms + var(--d, 0ms));
+}
+/* Der Haken kommt zum Schluss, etwas kräftiger gezeichnet als die Strahlen —
+   er ist die eigentliche Bestätigung, die Sonne der Rahmen dafür. */
+.sun--sent .sun__check { stroke-width: 2px; }
+.js .funnel__done:not([hidden]) .sun--sent .sun__check {
+  animation: sun-draw 420ms var(--ease-soft) 1180ms both;
+}
+.js .funnel__done:not([hidden]) .funnel__done-text {
+  animation: done-rise 700ms var(--ease-soft) 900ms both;
+}
+.js .funnel__done:not([hidden]) .funnel__done-btn {
+  animation: done-rise 700ms var(--ease-soft) 1080ms both;
+}
+
 .funnel__foot {
   display: flex; align-items: center; justify-content: space-between;
   gap: 1rem; flex-wrap: wrap;
@@ -1396,7 +1444,9 @@ a {
 
 /* ---------- 19 · FORMULAR ----------
    Nur Unterstriche, keine Kästen. Lebt im Funnel-Overlay. */
-.form { display: grid; gap: 1.5rem; }
+/* Der Funnel soll in einem Bild stehen, ohne Scrollbalken. Deshalb sitzen
+   die Felder enger beieinander als in einem klassischen Formular. */
+.form { display: grid; gap: 1.1rem; }
 
 .field { display: grid; gap: 0.4rem; }
 .field label {
@@ -1420,7 +1470,7 @@ a {
   border-radius: 0;
   transition: border-color var(--dur-state) var(--ease-soft);
 }
-.field textarea { resize: vertical; min-height: 7rem; }
+.field textarea { resize: vertical; min-height: 5rem; }
 .field select {
   appearance: none;
   background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
@@ -1442,6 +1492,58 @@ a {
 
 .field.is-invalid input,
 .field.is-invalid textarea { border-color: var(--alarm); }
+
+/* Die Einwilligung. Das echte Kästchen liegt unsichtbar darunter, damit
+   Tastatur und Vorlesehilfen weiter funktionieren — sichtbar ist ein
+   gezeichnetes Kästchen im gleichen Haarstrich wie der Rest der Seite. */
+.field--check { gap: 0.55rem; }
+.check {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.7rem;
+  cursor: pointer;
+  /* Die Grundregel für .field label macht Versalien aus jedem Label. */
+  font-family: var(--font-sans) !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  line-height: 1.55;
+  color: var(--fg-muted) !important;
+}
+.check input {
+  position: absolute;
+  width: 1px; height: 1px; min-height: 0;
+  padding: 0; margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+.check__box {
+  width: 20px; height: 20px;
+  margin-top: 0.1rem;
+  display: grid; place-items: center;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  transition: border-color var(--dur-state) var(--ease-soft),
+              background-color var(--dur-state) var(--ease-soft);
+}
+.check__box svg {
+  width: 13px; height: 13px;
+  fill: none; stroke: var(--paper); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 16; stroke-dashoffset: 16;
+}
+.check input:checked + .check__box {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.check input:checked + .check__box svg {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 260ms var(--ease) 40ms;
+}
+.check input:focus-visible + .check__box { outline: 2px solid var(--accent); outline-offset: 3px; }
+.check__text a { color: var(--fg-strong); border-bottom: 1px solid var(--line-2); }
+.field--check.is-invalid .check__box { border-color: var(--alarm); }
 .field__error {
   font-family: var(--font-sans);
   font-size: 0.78rem;
@@ -1541,6 +1643,13 @@ a {
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
+/* Zwischen dem Parsen der Seite und dem Start von main.js steht der Satz
+   fertig gesetzt da — in der Ersatzschrift und in voller Deckung. Danach
+   wird er zerlegt und läuft noch einmal ein. Von außen sieht das aus, als
+   baue sich die Headline zweimal auf, das erste Mal unsauber. Deshalb
+   bleibt sie unsichtbar, bis JS sie zerlegt hat. */
+.js [data-wash]:not(.is-split) { opacity: 0; }
+
 .w > i { display: inline-block; font-style: inherit; }
 .js .w > i { transform: translateY(115%); opacity: 0; }
 .js [data-wash].is-in .w > i,
@@ -1611,7 +1720,10 @@ a {
   .js .shot[data-reveal] img { transform: none; }
   .js .sun--hero path,
   .js .sun--line path,
-  .js .sun--closing path { stroke-dashoffset: 0; }
+  .js .sun--closing path,
+  .js .sun--sent path { stroke-dashoffset: 0; animation: none; }
+  .js .funnel__done:not([hidden]) .funnel__done-text,
+  .js .funnel__done:not([hidden]) .funnel__done-btn { animation: none; }
   /* Ohne diese Zeile bliebe der Trenner halb unsichtbar: die Strahlen
      stehen sonst auf Deckung 0. */
   .js .sun--line .sun__rays path { opacity: 1; }

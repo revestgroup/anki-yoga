@@ -249,12 +249,13 @@
 </section>
 
 <!-- ============ 4 · DAS LICHT ============
-     Ein Bild, das langsamer läuft als die Seite. Hier wird es hell —
-     und genau hier steht ihr Name als Foto. -->
+     Ein Bild über die volle Breite. Hier wird es hell — und genau hier
+     steht ihr Name als Foto. Kein Parallax mehr: der braucht Überstand,
+     und Überstand heißt, dass oben und unten etwas abgeschnitten wird. -->
 <section class="light" aria-label="Im Studio">
   <div class="light__media">
     <img src="assets/img/licht.jpg" alt="Anki in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront auf den Boden"
-         loading="lazy" width="1600" height="1066" data-parallax="0.09">
+         loading="lazy" width="1600" height="1066">
   </div>
   <p class="light__line" data-wash>Und irgendwann wird es hell.</p>
 </section>
@@ -789,6 +790,20 @@
         <p class="field__error" data-error-for="f-msg" hidden>Schreib mir ein, zwei Sätze.</p>
       </div>
 
+      <div class="field field--check">
+        <label class="check" for="f-privacy">
+          <input type="checkbox" id="f-privacy" name="privacy" required>
+          <span class="check__box" aria-hidden="true">
+            <svg viewBox="0 0 16 16"><path d="m3.6 8.4 2.9 2.9 5.9-6.4"/></svg>
+          </span>
+          <span class="check__text">
+            Ich habe die <a href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a>
+            gelesen und bin damit einverstanden, dass Anki mir antwortet.
+          </span>
+        </label>
+        <p class="field__error" data-error-for="f-privacy" hidden>Ohne dein Häkchen darf ich dir nicht schreiben.</p>
+      </div>
+
       <button class="btn btn--primary btn--wide" type="submit" id="formSubmit">
         <span class="btn__label">Nachricht senden</span>
       </button>
@@ -800,6 +815,40 @@
 
       <p class="form__status" id="formStatus" role="status" aria-live="polite" hidden></p>
     </form>
+
+    <!-- Schritt 3 ist nur die Bestätigung. Es gibt noch kein Backend, das
+         Formular schickt also nichts weg — es zeigt, wie es sich anfühlen
+         wird. Die Sonne zeichnet sich dabei wie im Hero. -->
+    <div class="funnel__pane funnel__done" data-pane="3" hidden>
+      <svg class="sun sun--sent" viewBox="0 0 120 64" aria-hidden="true">
+        <g class="sun__rays">
+          <path style="--d:0ms"   pathLength="1" d="M60 39V7"/>
+          <path style="--d:90ms"  pathLength="1" d="M64.4 39.58 68.28 25.09"/>
+          <path style="--d:90ms"  pathLength="1" d="M55.6 39.58 51.72 25.09"/>
+          <path style="--d:180ms" pathLength="1" d="M68.5 41.28 83.5 15.3"/>
+          <path style="--d:180ms" pathLength="1" d="M51.5 41.28 36.5 15.3"/>
+          <path style="--d:270ms" pathLength="1" d="M72.02 43.98 83.33 32.67"/>
+          <path style="--d:270ms" pathLength="1" d="M47.98 43.98 36.67 32.67"/>
+          <path style="--d:360ms" pathLength="1" d="M74.72 47.5 101.57 32"/>
+          <path style="--d:360ms" pathLength="1" d="M45.28 47.5 18.43 32"/>
+          <path style="--d:450ms" pathLength="1" d="M76.42 51.6 92.84 47.2"/>
+          <path style="--d:450ms" pathLength="1" d="M43.58 51.6 27.16 47.2"/>
+          <path style="--d:540ms" pathLength="1" d="M77 56h29"/>
+          <path style="--d:540ms" pathLength="1" d="M43 56H14"/>
+        </g>
+        <g class="sun__horizon">
+          <path pathLength="1" d="M78 56h36"/>
+          <path pathLength="1" d="M42 56H6"/>
+        </g>
+        <!-- Der Haken sitzt genau dort, wo bei der Sonne die Scheibe wäre.
+             Er zeichnet sich zuletzt, wenn alle Strahlen stehen. -->
+        <path class="sun__check" pathLength="1" d="m53.5 50.2 4.4 4.4 9-9.6"/>
+      </svg>
+
+      <p class="funnel__done-text">Deine Nachricht ist unterwegs. Ich melde mich bei dir.</p>
+
+      <button class="btn btn--wide funnel__done-btn" type="button" data-funnel-close>Schließen</button>
+    </div>
   </div>
 </dialog>
 

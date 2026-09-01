@@ -32,6 +32,11 @@
       el.appendChild(mask);
       if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
     });
+
+    // Erst jetzt sichtbar machen. Bis hierhin hält das CSS den Satz auf
+    // Deckung 0 — sonst steht er einen Moment fertig da, verschwindet und
+    // läuft danach noch einmal wortweise ein.
+    el.classList.add('is-split');
   });
 
   /* ---------- Hero: eine orchestrierte Ladesequenz ---------- */
@@ -330,9 +335,14 @@
      geht — etwa über „Platz anfragen" —, überspringt den ersten.        */
 
   const funnel = $('#funnel');
+  let goToStep = null;
 
   if (funnel && typeof funnel.showModal === 'function') {
-    const panes   = { 1: $('[data-pane="1"]', funnel), 2: $('[data-pane="2"]', funnel) };
+    const panes   = {
+      1: $('[data-pane="1"]', funnel),
+      2: $('[data-pane="2"]', funnel),
+      3: $('[data-pane="3"]', funnel),
+    };
     const stepEl  = $('#funnelStep');
     const titleEl = $('#funnelTitle');
     const topicIn = $('#f-topic', funnel);
@@ -340,10 +350,9 @@
     // Der zweite Schritt heißt nicht mehr „Worum geht es?" — die Frage
     // ist ja beantwortet. Er nimmt die Antwort als Überschrift auf.
     const titles = {
-      'Yogastunde':          'Schön. Erzähl mir kurz von dir.',
-      'Retreat oder Format': 'Welches Format reizt dich?',
-      'Ätherische Öle':      'Wobei soll ein Öl dir helfen?',
-      'Etwas anderes':       'Dann schreib einfach los.',
+      'Yoga':          'Schön. Erzähl mir kurz von dir.',
+      'Öle':           'Wobei soll ein Öl dir helfen?',
+      'Etwas anderes': 'Dann schreib einfach los.',
     };
 
     let lastTrigger = null;
@@ -351,9 +360,17 @@
     const showStep = (step, topic) => {
       panes[1].hidden = step !== 1;
       panes[2].hidden = step !== 2;
-      stepEl.textContent = `Schritt ${step} von 2`;
+      panes[3].hidden = step !== 3;
 
-      if (step === 2) {
+      // Der Zähler zählt nur die beiden Schritte, die man selbst geht.
+      // Auf der Bestätigung stünde „Schritt 3 von 2".
+      stepEl.hidden = step === 3;
+      if (step !== 3) stepEl.textContent = `Schritt ${step} von 2`;
+
+      if (step === 3) {
+        titleEl.textContent = 'Danke dir.';
+        titleEl.focus({ preventScroll: true });
+      } else if (step === 2) {
         topicIn.value = topic;
         titleEl.textContent = titles[topic] || titles['Etwas anderes'];
         // Am Finger nicht ins Feld springen: die Tastatur schöbe sich sofort
@@ -396,7 +413,13 @@
     });
 
     $('[data-funnel-back]', funnel)?.addEventListener('click', () => showStep(1));
-    $('[data-funnel-close]', funnel)?.addEventListener('click', () => funnel.close());
+    $$('[data-funnel-close]', funnel).forEach((btn) => {
+      btn.addEventListener('click', () => funnel.close());
+    });
+
+    // Das Formular steht in einem eigenen Block weiter unten und kommt
+    // sonst nicht an showStep heran.
+    goToStep = showStep;
 
     // Klick auf die Fläche daneben schließt. Das Dialogelement selbst füllt
     // den Bildschirm nicht, der Backdrop zählt aber als Treffer auf ihm.
@@ -451,29 +474,13 @@
         return;
       }
 
-      /* Kein Backend vorhanden: die Nachricht wird ins Mailprogramm übergeben.
-         Sobald ein Formulardienst angebunden ist, ersetzt ein fetch() diesen Block. */
-      const data = new FormData(form);
-      const subject = `Anfrage über die Website — ${data.get('topic')}`;
-      const body = [
-        `Name: ${data.get('name')}`,
-        `E-Mail: ${data.get('email')}`,
-        `Thema: ${data.get('topic')}`,
-        '',
-        data.get('message'),
-      ].join('\n');
-
-      // TODO Anki: eigene Adresse eintragen.
-      const mailto = `mailto:hallo@ankistrahl.de?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-      form.classList.add('is-sending');
-      if (status) {
-        status.hidden = false;
-        status.textContent = 'Ich öffne dein Mailprogramm mit der fertigen Nachricht. Abschicken nicht vergessen.';
-      }
-
-      window.location.href = mailto;
-      setTimeout(() => form.classList.remove('is-sending'), 1200);
+      /* Es geht bewusst nichts raus. Solange kein Backend angebunden ist,
+         zeigt das Formular nur die Bestätigung, damit sich der Ablauf
+         testen lässt. Später kommt hier ein fetch() auf den n8n-Webhook
+         davor, und erst dessen Antwort schaltet auf Schritt 3. */
+      if (status) { status.hidden = true; status.textContent = ''; }
+      goToStep?.(3);
+      form.reset();
     });
   }
 })();
