@@ -1614,11 +1614,10 @@ a {
 }
 @media (min-width: 56rem) {
   .footer__inner {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: 1fr auto;
     gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
   }
-  .footer__links { display: contents; }
 }
 /* Derselbe Schriftzug wie oben: dicht unter dem offenen Strich, damit Sonne
    und Name als ein Zeichen gelesen werden und nicht als Bild mit Bildunterschrift. */
@@ -1637,20 +1636,31 @@ a {
   font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--fg-muted);
 }
-.footer__nav, .footer__legal { display: grid; gap: 0.65rem; }
+/* Zwei Spalten, spaltenweise gefüllt: so läuft die Leserichtung von oben nach
+   unten wie im Menü und nicht im Zickzack. */
+.footer__nav {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column;
+  gap: 0.85rem clamp(2rem, 5vw, 3.5rem);
+}
 
-/* Auf dem Handy steht der Footer mittig, und die beiden Linklisten stehen
-   nebeneinander. Untereinander wären es sechs Zeilen Leerlauf am Seitenende. */
+/* Am Ende, unter einer Haarlinie und kleiner als alles darüber. */
+.footer__base {
+  max-width: var(--shell);
+  margin: clamp(2.5rem, 5vw, 3.5rem) auto 0;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--rule);
+}
+.footer__legal { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+.footer__legal a { font-size: 0.76rem; color: var(--fg-muted); }
+
+/* Auf dem Handy steht der Footer mittig. */
 @media (max-width: 56rem) {
   .footer__inner { justify-items: center; text-align: center; gap: 2rem; }
   .footer__brand { display: grid; justify-items: center; }
-  .footer__links {
-    width: 100%;
-    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem 1.5rem;
-    align-items: start;
-  }
-  .footer__nav, .footer__legal { gap: 0.9rem; }
+  .footer__nav { width: 100%; justify-content: center; gap: 0.9rem 2.5rem; }
+  .footer__legal { justify-content: center; }
   .footer a { justify-self: center; }
 }
 .footer a {
