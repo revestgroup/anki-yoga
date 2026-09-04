@@ -56,7 +56,10 @@
   --font-serif: Literata, Georgia, "Times New Roman", serif;
   --font-sans:  Jost, "Helvetica Neue", Arial, sans-serif;
 
-  --step-hero:  clamp(2.6rem, 7.4vw, 5.5rem);
+  /* Die Hero-Headline sind zwei gleich gebaute Sätze. Die Parallele wirkt
+     nur, wenn beide gleich umbrechen — deshalb ist die Stufe so gewählt,
+     dass ab Tablet je ein Satz auf eine Zeile passt. */
+  --step-hero:  clamp(2rem, 4.6vw, 3.6rem);
   --step-said:  clamp(1.6rem, 3.2vw, 2.5rem);
   --step-h3:    clamp(1.2rem, 1.9vw, 1.5rem);
   --step-lead:  clamp(1.08rem, 0.98rem + 0.45vw, 1.28rem);
@@ -617,15 +620,21 @@ a {
   line-height: 1.02;
   letter-spacing: -0.03em;
   color: var(--fg-strong);
-  max-width: 11em;
+  /* Weit genug, dass jeder der beiden Sätze auf seiner Zeile bleibt. Der
+     Umbruch dazwischen steht im Markup, nicht im Zufall des Umbruchs.
+     Am Telefon greift die Spaltenbreite und beide brechen zweizeilig um —
+     dann aber beide gleich, weil sie fast gleich lang sind. */
+  max-width: 18em;
 }
 
+/* Drei Wörter, kein Satz. Kursiv gesetzt läse sich das wie ein Nachsatz zur
+   Headline; gesperrt und in der Grotesk steht es darunter wie eine Signatur. */
 .hero__after {
-  max-width: 26em;
-  margin-top: clamp(1.25rem, 2.5vw, 1.75rem);
-  font-size: var(--step-lead);
-  font-style: italic;
+  margin-top: clamp(1.5rem, 3vw, 2rem);
+  font-family: var(--font-sans);
+  font-size: clamp(0.76rem, 1.3vw, 0.92rem);
   font-weight: 300;
+  letter-spacing: 0.3em;
   color: var(--fg);
 }
 
@@ -763,9 +772,8 @@ a {
   .story__col--mid { padding-left: 8%; }
 }
 
-/* Der Schluss ihrer Geschichte kommt ohne Bild aus. */
-.story__close { max-width: var(--measure); display: grid; gap: 1.15rem; }
-
+/* Ihr eigener Satz schließt die Geschichte — der einzige farbige in dieser
+   Sektion, und deshalb steht er allein. */
 .story__motto {
   margin-top: clamp(1.25rem, 3vw, 2rem);
   font-size: clamp(1.25rem, 2.6vw, 1.7rem);
@@ -808,32 +816,14 @@ a {
   overflow: clip;
   background: var(--night);
   aspect-ratio: 1600 / 1066;
-  display: grid; align-items: end;
 }
+/* Kein Verlauf mehr über dem Foto: der war nur da, damit die Zeile darauf
+   lesbar blieb. Ohne Zeile verdunkelt er das Bild grundlos — und dieses
+   Bild ist der Moment, in dem die Seite hell wird. */
 .light__media { position: absolute; inset: 0; }
 .light__media img {
   width: 100%; height: 100%;
   object-fit: cover;
-}
-.light__media::after {
-  content: "";
-  position: absolute; inset: 0;
-  background: linear-gradient(to top,
-    oklch(0.15 0.026 300 / 0.62) 0%,
-    oklch(0.15 0.026 300 / 0.08) 48%,
-    transparent 70%);
-}
-.light__line {
-  position: relative; z-index: var(--z-raised);
-  width: 100%;
-  max-width: var(--shell-out);
-  margin-inline: auto;
-  padding: 0 var(--gutter) clamp(2.5rem, 6vw, 4.5rem);
-  font-size: clamp(1.45rem, 3.6vw, 2.6rem);
-  font-weight: 200;
-  line-height: 1.15;
-  letter-spacing: -0.022em;
-  color: var(--paper);
 }
 
 /* ---------- 12 · WAS ICH MACHE ---------- */
@@ -907,7 +897,52 @@ a {
   background: var(--paper);
 }
 .schedule > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
-.schedule .said { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+
+/* Der Kopf steht in zwei Spalten. Vorher lief der Text auf Lesebreite links
+   und rechts blieb die halbe Seite weiß — das war keine Ruhe, das war eine
+   Lücke. Jetzt hält die rechte Spalte ihre drei Wörter. */
+.schedule__head {
+  margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  display: grid;
+  gap: clamp(2.25rem, 5vw, 4rem);
+}
+@media (min-width: 60rem) {
+  .schedule__head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
+    align-items: start;
+  }
+}
+
+.schedule__intro {
+  max-width: var(--measure);
+  display: grid;
+  gap: 0.9rem;
+}
+/* Zwischen Überschrift und Einleitung reicht ein Absatzabstand — der große
+   Abstand sitzt erst zwischen Kopf und Terminen. */
+.schedule__intro .said { margin-bottom: clamp(0.4rem, 1vw, 0.75rem); }
+
+/* Ihre drei Wörter, jedes auf einer eigenen Zeile. Untereinander liest man sie
+   als drei Schritte; in einer Zeile waren sie ein Absatz, der mitlief. Der
+   Strich darüber ist der einzige Farbpunkt in dieser Sektion und genau 2rem
+   breit — eine Markierung, keine Trennung. */
+.schedule__triad {
+  display: grid;
+  gap: 0.15rem;
+  padding-top: 1.4rem;
+  font-family: var(--font-serif);
+  font-size: var(--step-lead);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--fg-strong);
+  position: relative;
+}
+.schedule__triad::before {
+  content: "";
+  position: absolute; top: 0; left: 0;
+  width: 2rem; height: 1px;
+  background: var(--accent);
+}
 
 /* Drei Karten statt einer Tabelle: kein Kopfzeilen-Raster, kein seitliches
    Scrollen, keine Umbau-Regeln fürs Handy. Die Sektion steht auf Weiß, die
@@ -922,37 +957,64 @@ a {
   .schedule__list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-/* Das Gelb kommt hier nur als Papierton, nicht als Farbe: 22 % Sonnenlicht
-   in Weiß. Damit bleibt die Öle-Sektion der einzige Ort, an dem Gelb wirklich
-   Fläche ist — hier ist es die Wärme des Morgenlichts auf dem Kursplan.
-   Mehr als ein Viertel und die Karten fangen an, um Aufmerksamkeit zu rufen. */
+/* Eine ruhige Fläche statt eines leeren Rahmens. Der Umriss allein ließ die
+   Karten wie Platzhalter aussehen; ein gelber Papierton wiederum war ein
+   Vorgriff auf die Öle-Sektion, an einer Stelle, an der die Seite noch nicht
+   farbig ist. Bleibt der Papierton der Seite selbst, eine Spur dunkler. */
 .course {
   position: relative;
-  display: grid; align-content: start;
-  gap: 0.35rem;
-  padding: clamp(1.5rem, 2.6vw, 2.15rem);
-  background: var(--sun-wash);
+  display: flex; flex-direction: column;
+  align-items: flex-start;
+  padding: clamp(1.6rem, 2.6vw, 2.15rem);
+  background: var(--surface);
   border-radius: var(--r-card);
+  overflow: clip;
+  transition: background var(--dur-state) var(--ease-soft),
+              transform var(--dur-state) var(--ease);
+}
+/* Ein Strich, der beim Überfahren über die Oberkante läuft — dieselbe
+   Bewegung wie bei der Sonne, nur klein. Er liegt in der Kante der Karte,
+   nicht davor, deshalb schneidet overflow: clip ihn an den Radien ab. */
+.course::before {
+  content: "";
+  position: absolute; inset-inline: 0; top: 0;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 620ms var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .course:hover {
+    background: color-mix(in oklch, var(--accent) 5%, var(--surface));
+    transform: translateY(-2px);
+  }
+  .course:hover::before { transform: scaleX(1); }
+}
+/* Der Fokusring gehört um die ganze Karte, nicht um die drei Wörter unten —
+   angeklickt wird die Karte. */
+.course:has(.course__cta:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
-/* Tag und Uhrzeit stehen zusammen in einer Zeile — das ist die Information,
-   nach der man eine Kursliste überfliegt. Der Punkt dazwischen ist gesetzt,
-   nicht getippt, damit er auch bei Umbruch nicht allein stehen bleibt. */
-.course__when {
-  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.5rem;
+/* Der Wochentag ist das erste, wonach man sucht: Passt der Abend überhaupt?
+   Deshalb steht er oben, klein und gesperrt wie ein Schild. */
+.course__day {
   font-family: var(--font-sans);
-  font-size: 0.92rem;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.01em;
-  color: var(--fg-strong);
-}
-.course__day::after {
-  content: "\00B7";
-  margin-left: 0.5rem;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase;
   color: var(--fg-muted);
+}
+/* "ab Oktober" hängt sich an den Tag, statt eine vierte Zeile aufzumachen.
+   Der Punkt davor ist gesetzt, nicht getippt. */
+.course__note::before {
+  content: "\00B7";
+  margin: 0 0.45em;
 }
 
 .course__what {
+  margin-top: 0.65rem;
   font-family: var(--font-serif);
   font-size: var(--step-h3);
   font-weight: 400;
@@ -960,15 +1022,49 @@ a {
   line-height: 1.2;
   color: var(--fg-strong);
 }
-.course__where {
+/* Die Uhrzeit ist die zweite Frage und darf deshalb kräftiger stehen als ein
+   Nebensatz. Tabellenziffern, damit die drei Zeiten untereinander fluchten. */
+.course__when {
+  margin-top: 0.3rem;
   font-family: var(--font-sans);
-  font-size: 0.88rem;
-  color: var(--fg-muted);
+  font-size: 0.98rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--fg);
 }
 
-/* Der Knopf sitzt immer unten, auch wenn die Karte daneben zwei Zeilen
-   mehr Titel hat. margin-top: auto braucht dafür eine Zeile, die wächst. */
-.course__cta { margin-top: clamp(1.1rem, 2.2vw, 1.6rem); justify-self: start; }
+/* Fester Abstand statt margin-top: auto. Alle drei Karten sind gleich gebaut,
+   also brauchen sie niemanden, der den Knopf nach unten drückt — das erzeugte
+   nur ein Loch in der Mitte. */
+.course__cta {
+  margin-top: clamp(1.5rem, 2.8vw, 2rem);
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 0.02em;
+  color: var(--fg-strong);
+  background: none; border: 0;
+  cursor: pointer;
+  transition: color var(--dur-state) var(--ease-soft);
+}
+.course__cta::before {
+  content: "\2192";
+  order: 2;
+  transition: transform var(--dur-state) var(--ease);
+}
+/* Die ganze Karte ist die Tür. Der Knopf legt sich unsichtbar darüber, damit
+   auch der Ort und die Uhrzeit anklickbar sind — und trotzdem genau ein
+   Bedienelement in der Tastaturreihenfolge steht. */
+.course__cta::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+}
+@media (hover: hover) and (pointer: fine) {
+  .course:hover .course__cta { color: var(--accent); }
+  .course:hover .course__cta::before { transform: translateX(4px); }
+}
+.course__cta:focus-visible { outline: none; }
 
 .schedule__foot {
   /* Die Box behält die Breite der Tabelle, damit beide auf derselben Kante
@@ -1086,12 +1182,6 @@ a {
 @media (min-width: 48rem) {
   .formats__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-.formats__foot {
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  max-width: var(--measure);
-}
-.formats__cta { margin-top: 1.25rem; width: max-content; max-width: 100%; }
 
 .format {
   display: grid;
@@ -1308,11 +1398,65 @@ a {
   fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linecap: round;
 }
 
-.funnel__step {
-  font-family: var(--font-sans);
-  font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
-  color: var(--fg-muted);
+/* Der Fortschritt ist die Sonne selbst. Sie steht links oben, wo vorher der
+   Zähler stand, und wächst am Ende in die Mitte des Blattes.
+
+   Bewegt wird über width und left, nicht über scale: eine skalierte Ebene
+   rastert der Browser einmal fest und gibt die Haarlinien stufig zurück.
+   left: 50% verschiebt um die halbe Blattbreite, translateX(-50%) um die
+   halbe Eigenbreite — zusammen ergibt das die Mitte, und beide Werte lassen
+   sich weich überblenden. */
+.funnel__progress {
+  position: relative;
+  left: 0;
+  width: var(--sun-w, 82px);
+  margin-bottom: 0.35rem;
+  transform: translateX(0);
+  color: var(--accent);
+  transition: width 760ms var(--ease),
+              left 760ms var(--ease),
+              transform 760ms var(--ease),
+              margin-bottom 760ms var(--ease);
 }
+.funnel__progress path { stroke-width: 1.3px; }
+
+/* Die Strahlen kommen schrittweise dazu, von innen nach außen. Zusätzlich zum
+   Zeichnen eine Blende, sonst setzt jeder Strahl mit einer harten Spitze ein. */
+.js .funnel__progress .sun__rays path {
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  opacity: 0;
+  transition: stroke-dashoffset 700ms var(--ease-soft),
+              opacity 480ms var(--ease-soft);
+  transition-delay: var(--d, 0ms);
+}
+.js .funnel__progress[data-step="1"] .r1,
+.js .funnel__progress[data-step="2"] :is(.r1, .r2),
+.js .funnel__progress[data-step="3"] :is(.r1, .r2, .r3) {
+  stroke-dashoffset: 0; opacity: 1;
+}
+.js .funnel__progress .sun__check {
+  stroke-width: 2px;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  opacity: 0;
+}
+
+/* Am Schluss: dieselbe Sonne, groß und mittig, und erst wenn sie steht,
+   zeichnet sich der Haken hinein. */
+.funnel__sheet.is-done .funnel__progress {
+  --sun-w: clamp(112px, 28vw, 144px);
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: clamp(0.75rem, 2.5vw, 1.1rem);
+}
+.js .funnel__sheet.is-done .funnel__progress .sun__check {
+  stroke-dashoffset: 0; opacity: 1;
+  transition: stroke-dashoffset 520ms var(--ease-soft) 700ms,
+              opacity 160ms linear 700ms;
+}
+/* Auf der Bestätigung ist alles mittig — der Satz, der Knopf, und dann darf
+   die Überschrift nicht als einzige links kleben bleiben. */
+.funnel__sheet.is-done .funnel__title { text-align: center; }
+
 .funnel__title {
   margin: 0.5rem 2.5rem clamp(1.1rem, 3vw, 1.5rem) 0;
   font-family: var(--font-serif);
@@ -1371,8 +1515,8 @@ a {
   .topic:hover::after { transform: translate(4px, -50%); }
 }
 
-/* Schritt 3: die Bestätigung. Nach dem Absenden passiert sonst sichtbar
-   nichts — hier geht stattdessen die Sonne auf, wie im Hero. */
+/* Die Bestätigung. Die Sonne dafür steht oben im Blatt und ist dieselbe, die
+   den Fortschritt gezählt hat — hier stehen nur noch Satz und Knopf. */
 .funnel__done {
   display: grid;
   justify-items: center;
@@ -1380,8 +1524,6 @@ a {
   gap: clamp(1.1rem, 3vw, 1.5rem);
   padding: clamp(0.5rem, 2vw, 1.25rem) 0 0.25rem;
 }
-.sun--sent { width: clamp(104px, 26vw, 138px); color: var(--accent); }
-.sun--sent path { stroke-width: 1.3px; }
 
 .funnel__done-text {
   font-family: var(--font-serif);
@@ -1389,45 +1531,25 @@ a {
   font-weight: 300;
   line-height: 1.45;
   color: var(--fg-strong);
-  max-width: 24ch;
+  /* Zwei Zeilen, nicht drei. Bei 24ch bricht der Satz mitten in „ist unterwegs"
+     und die Bestätigung sieht schmaler aus als der Knopf darunter. */
+  max-width: 30ch;
   text-wrap: balance;
 }
 .funnel__done-btn { min-width: 11rem; }
 
 /* Die Bestätigung wird von `hidden` auf sichtbar geschaltet. Eine Transition
-   würde dabei nicht feuern, eine Animation startet neu — deshalb `animation`. */
-@keyframes sun-draw { to { stroke-dashoffset: 0; } }
+   würde dabei nicht feuern, eine Animation startet neu — deshalb `animation`.
+   Satz und Knopf kommen erst, wenn die Sonne oben ihren Platz gefunden hat. */
 @keyframes done-rise {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: none; }
 }
-.js .sun--sent path { stroke-dasharray: 1; stroke-dashoffset: 1; }
-.js .funnel__done:not([hidden]) .sun--sent .sun__horizon path {
-  animation: sun-draw 900ms var(--ease-soft) 120ms both;
-}
-/* Nur zeichnen reicht bei den kurzen Strahlen nicht: mittendrin steht die
-   Sonne als Haufen abgerissener Striche da und sieht kaputt aus. Deshalb
-   blenden sie beim Zeichnen zusätzlich auf — dann geht sie auf, statt sich
-   zusammenzusetzen. */
-@keyframes ray-rise {
-  from { stroke-dashoffset: 1; opacity: 0; }
-  to   { stroke-dashoffset: 0; opacity: 1; }
-}
-.js .funnel__done:not([hidden]) .sun--sent .sun__rays path {
-  animation: ray-rise 620ms var(--ease-soft) both;
-  animation-delay: calc(560ms + var(--d, 0ms));
-}
-/* Der Haken kommt zum Schluss, etwas kräftiger gezeichnet als die Strahlen —
-   er ist die eigentliche Bestätigung, die Sonne der Rahmen dafür. */
-.sun--sent .sun__check { stroke-width: 2px; }
-.js .funnel__done:not([hidden]) .sun--sent .sun__check {
-  animation: sun-draw 420ms var(--ease-soft) 1180ms both;
-}
 .js .funnel__done:not([hidden]) .funnel__done-text {
-  animation: done-rise 700ms var(--ease-soft) 900ms both;
+  animation: done-rise 700ms var(--ease-soft) 620ms both;
 }
 .js .funnel__done:not([hidden]) .funnel__done-btn {
-  animation: done-rise 700ms var(--ease-soft) 1080ms both;
+  animation: done-rise 700ms var(--ease-soft) 800ms both;
 }
 
 .funnel__foot {
@@ -1476,7 +1598,7 @@ a {
     background: var(--rule);
   }
   .funnel__close { top: 1.35rem; right: 0.6rem; }
-  .funnel__step  { margin-top: 0.4rem; }
+  .funnel__progress { margin-top: 0.4rem; }
 }
 
 /* ---------- 19 · FORMULAR ----------
@@ -1607,18 +1729,19 @@ a {
   position: relative; z-index: var(--z-raised);
   padding: clamp(3.5rem, 7vw, 5.5rem) var(--gutter);
 }
+/* Eine Achse statt zwei Spalten. Das Logo ist eine aufgehende Sonne — die
+   steht mittig, sonst zeigt sie ins Leere. Die Menüpunkte laufen darunter als
+   eine Zeile weiter, damit der Abschluss ruhig bleibt und nicht als zweite
+   Navigation neben dem Zeichen steht. */
 .footer__inner {
   max-width: var(--shell);
   margin-inline: auto;
-  display: grid; gap: 2.5rem;
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: clamp(2rem, 4vw, 2.75rem);
 }
-@media (min-width: 56rem) {
-  .footer__inner {
-    grid-template-columns: 1fr auto;
-    gap: clamp(2rem, 6vw, 5rem);
-    align-items: start;
-  }
-}
+.footer__brand { display: grid; justify-items: center; }
 /* Derselbe Schriftzug wie oben: dicht unter dem offenen Strich, damit Sonne
    und Name als ein Zeichen gelesen werden und nicht als Bild mit Bildunterschrift. */
 .footer__name {
@@ -1636,13 +1759,12 @@ a {
   font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
   color: var(--fg-muted);
 }
-/* Zwei Spalten, spaltenweise gefüllt: so läuft die Leserichtung von oben nach
-   unten wie im Menü und nicht im Zickzack. */
+/* Alle sechs Punkte auf einer Linie, mittig unter dem Zeichen. Auf schmalen
+   Schirmen bricht die Zeile um und bleibt dabei zentriert. */
 .footer__nav {
-  display: grid;
-  grid-template-rows: repeat(3, auto);
-  grid-auto-flow: column;
-  gap: 0.85rem clamp(2rem, 5vw, 3.5rem);
+  display: flex; flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem clamp(1.4rem, 3.4vw, 2.75rem);
 }
 
 /* Am Ende, unter einer Haarlinie und kleiner als alles darüber. */
@@ -1652,23 +1774,24 @@ a {
   padding-top: 1.35rem;
   border-top: 1px solid var(--rule);
 }
-.footer__legal { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; }
+/* Pflichtangaben stehen rechts in der Ecke: außerhalb der Mittelachse, damit
+   sie nicht mitgelesen werden, aber an der Kante, an der man sie sucht. */
+.footer__legal {
+  display: flex; flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem 1.5rem;
+}
 .footer__legal a { font-size: 0.76rem; color: var(--fg-muted); }
 
-/* Auf dem Handy steht der Footer mittig. */
+/* Auf dem Handy gibt es keine Ecke — dort steht auch das Kleingedruckte mittig. */
 @media (max-width: 56rem) {
-  .footer__inner { justify-items: center; text-align: center; gap: 2rem; }
-  .footer__brand { display: grid; justify-items: center; }
-  .footer__nav { width: 100%; justify-content: center; gap: 0.9rem 2.5rem; }
   .footer__legal { justify-content: center; }
-  .footer a { justify-self: center; }
 }
 .footer a {
   font-family: var(--font-sans);
   font-size: 0.85rem;
   color: var(--fg);
   text-decoration: none;
-  justify-self: start;
   border-bottom: 1px solid transparent;
   transition: color var(--dur-state) var(--ease-soft),
               border-color var(--dur-state) var(--ease-soft);
@@ -1680,9 +1803,17 @@ a {
 /* ---------- 21 · BEWEGUNG ---------- */
 
 /* Grundsatz: ohne JS ist alles sichtbar. Alle Reveals hängen an .js.
-   Bilder haben ihre eigene Bewegung (siehe .shot) und sind hier ausgenommen. */
-.js [data-reveal]:not([data-wash]):not(.shot) { opacity: 0; transform: translateY(12px); }
-.js [data-reveal]:not([data-wash]):not(.shot).is-in {
+   Bilder haben ihre eigene Bewegung (siehe .shot) und sind hier ausgenommen.
+
+   Die Sonnen ebenfalls, und zwar aus einem sichtbaren Grund: wer eine
+   Zeichnung verschiebt, während sie sich selbst zeichnet, bekommt sie stufig
+   zurück. Der Browser legt für die Verschiebung eine eigene Ebene an und
+   rastert sie einmal fest — die Haarlinien sind für die Dauer der Bewegung
+   ein Bitmap. Erst wenn die Verschiebung endet, zeichnet er sauber neu. Genau
+   das sieht man: erst verpixelt, dann richtig. Die Sonne geht deshalb nur auf.
+   Sie kommt nicht auch noch von unten. */
+.js [data-reveal]:not([data-wash]):not(.shot):not(.sun):not(.rayline) { opacity: 0; transform: translateY(12px); }
+.js [data-reveal]:not([data-wash]):not(.shot):not(.sun):not(.rayline).is-in {
   opacity: 1; transform: none;
   transition: opacity var(--dur-reveal) var(--ease),
               transform var(--dur-reveal) var(--ease);
@@ -1759,10 +1890,12 @@ a {
 .funnel__close:active,
 .nav__toggle:active { transform: scale(0.9); }
 
-/* Die Zeile im Kursplan ist ein Ziel, kein Text — auf dem Handy ist sie
-   der ganze Block. */
-@media (hover: none) {
-  .schedule__table tbody tr:active { background: color-mix(in oklch, var(--sun-deep) 8%, transparent); }
+/* Die Karte im Kursplan ist ein Ziel, kein Text — am Finger gibt es kein
+   Überfahren, also muss der Druck selbst sichtbar sein. */
+.course:active {
+  background: color-mix(in oklch, var(--accent) 8%, var(--surface));
+  transform: scale(0.99);
+  transition-duration: var(--dur-press);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1774,8 +1907,12 @@ a {
   .js .shot[data-reveal] img { transform: none; }
   .js .sun--hero path,
   .js .sun--line path,
-  .js .sun--closing path,
-  .js .sun--sent path { stroke-dashoffset: 0; animation: none; }
+  .js .sun--closing path { stroke-dashoffset: 0; animation: none; }
+  /* Der Fortschritt bleibt lesbar: die Strahlen des erreichten Schritts stehen
+     sofort da, sie zeichnen sich nur nicht mehr. Der Haken ebenso. */
+  .js .funnel__progress { transition: none; }
+  .js .funnel__progress .sun__rays path { transition: none; }
+  .js .funnel__sheet.is-done .funnel__progress .sun__check { transition: none; }
   .js .funnel__done:not([hidden]) .funnel__done-text,
   .js .funnel__done:not([hidden]) .funnel__done-btn { animation: none; }
   /* Ohne diese Zeile bliebe der Trenner halb unsichtbar: die Strahlen
@@ -1783,8 +1920,10 @@ a {
   .js .sun--line .sun__rays path { opacity: 1; }
   .js .drop .drop__shape { animation: none; opacity: 1; }
   .js .drop .drop__ripple { animation: none; opacity: 0.4; }
-  .btn:active, .strip__btn:active, .topic:active,
+  .btn:active, .strip__btn:active, .topic:active, .course:active,
   .funnel__close:active, .nav__toggle:active { transform: none; }
+  .course:hover { transform: none; }
+  .course::before { transition: none; }
   .link-arrow:hover::after { transform: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

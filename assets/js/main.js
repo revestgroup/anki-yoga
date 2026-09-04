@@ -16,21 +16,40 @@
      taucht der Satz auf, wie man ihn sprechen würde — nicht als Block.
      Ohne JS bleibt der Satz ganz normaler Text.                        */
 
+  // Ein <br> im Markup bleibt ein Umbruch. Bei zweiteiligen Sätzen soll jeder
+  // Teil auf seiner eigenen Zeile stehen, sonst bricht der Satz irgendwo in der
+  // Mitte um und die Parallele geht verloren. Die Verzögerung zählt trotzdem
+  // über den Umbruch hinweg weiter — der Satz wird ja am Stück gesprochen.
+  const BREAK = '\u0000';
+
   $$('[data-wash]').forEach((el) => {
-    const words = el.textContent.trim().split(/\s+/);
+    const raw = Array.from(el.childNodes)
+      .map((node) => (node.nodeName === 'BR' ? BREAK : node.textContent))
+      .join('');
+
+    const tokens = raw.trim().split(/\s+|(\u0000)/).filter(Boolean);
     el.textContent = '';
 
-    words.forEach((word, i) => {
+    let i = 0;
+    tokens.forEach((token, pos) => {
+      if (token === BREAK) {
+        el.appendChild(document.createElement('br'));
+        return;
+      }
+
       const mask = document.createElement('span');
       mask.className = 'w';
       mask.style.setProperty('--i', i);
+      i += 1;
 
       const inner = document.createElement('i');
-      inner.textContent = word;
+      inner.textContent = token;
       mask.appendChild(inner);
 
       el.appendChild(mask);
-      if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
+      if (pos < tokens.length - 1 && tokens[pos + 1] !== BREAK) {
+        el.appendChild(document.createTextNode(' '));
+      }
     });
 
     // Erst jetzt sichtbar machen. Bis hierhin hält das CSS den Satz auf
@@ -321,19 +340,22 @@
   }
 
   /* ---------- Der Funnel ----------
-     Zwei Schritte statt eines langen Formulars. Wer schon weiß, worum es
-     geht — etwa über „Platz anfragen" —, überspringt den ersten.        */
+     Drei Schritte statt eines langen Formulars: Thema, Nachricht, Kontakt.
+     Wer schon weiß, worum es geht — etwa über „Ich komme" —, überspringt
+     den ersten. Schritt 4 ist die Bestätigung und wird nicht mitgezählt. */
 
   const funnel = $('#funnel');
   let goToStep = null;
+  let validateField = null;
 
   if (funnel && typeof funnel.showModal === 'function') {
-    const panes   = {
-      1: $('[data-pane="1"]', funnel),
-      2: $('[data-pane="2"]', funnel),
-      3: $('[data-pane="3"]', funnel),
-    };
-    const stepEl  = $('#funnelStep');
+    const STEPS = [1, 2, 3, 4];
+    const panes = Object.fromEntries(
+      STEPS.map((n) => [n, $(`[data-pane="${n}"]`, funnel)])
+    );
+    const sheet = $('.funnel__sheet', funnel);
+    const progress = $('#funnelProgress');
+    const stepLabel = $('#funnelStepLabel');
     const titleEl = $('#funnelTitle');
     const topicIn = $('#f-topic', funnel);
 
@@ -348,25 +370,30 @@
     let lastTrigger = null;
 
     const showStep = (step, topic) => {
-      panes[1].hidden = step !== 1;
-      panes[2].hidden = step !== 2;
-      panes[3].hidden = step !== 3;
+      STEPS.forEach((n) => { panes[n].hidden = step !== n; });
 
-      // Der Zähler zählt nur die beiden Schritte, die man selbst geht.
-      // Auf der Bestätigung stünde „Schritt 3 von 2".
-      stepEl.hidden = step === 3;
-      if (step !== 3) stepEl.textContent = `Schritt ${step} von 2`;
+      // Es gibt nur eine Sonne. Über drei Schritte kommen ihre Strahlen dazu,
+      // auf der Bestätigung wächst dieselbe Sonne in die Mitte des Blattes und
+      // bekommt den Haken. Deshalb bleibt sie auf Schritt 4 stehen und behält
+      // ihre drei Drittel — .is-done macht den Rest.
+      sheet.classList.toggle('is-done', step === 4);
+      progress.dataset.step = Math.min(step, 3);
+      if (step !== 4) stepLabel.textContent = `Schritt ${step} von 3`;
 
-      if (step === 3) {
+      if (step === 4) {
         titleEl.textContent = 'Danke dir.';
         titleEl.focus({ preventScroll: true });
+      } else if (step === 3) {
+        titleEl.textContent = 'Wie erreiche ich dich?';
+        if (finePointer.matches) $('#f-name', funnel)?.focus({ preventScroll: true });
+        else titleEl.focus({ preventScroll: true });
       } else if (step === 2) {
-        topicIn.value = topic;
-        titleEl.textContent = titles[topic] || titles['Etwas anderes'];
+        if (topic) topicIn.value = topic;
+        titleEl.textContent = titles[topicIn.value] || titles['Etwas anderes'];
         // Am Finger nicht ins Feld springen: die Tastatur schöbe sich sofort
         // über das halbe Blatt, bevor man die Frage gelesen hat. Stattdessen
         // bekommt die Überschrift den Fokus — Vorlesehilfen sagen sie an.
-        if (finePointer.matches) $('#f-name', funnel)?.focus({ preventScroll: true });
+        if (finePointer.matches) $('#f-msg', funnel)?.focus({ preventScroll: true });
         else titleEl.focus({ preventScroll: true });
       } else {
         titleEl.textContent = 'Worum geht es?';
@@ -402,7 +429,20 @@
       btn.addEventListener('click', () => showStep(2, btn.dataset.topic));
     });
 
-    $('[data-funnel-back]', funnel)?.addEventListener('click', () => showStep(1));
+    $$('[data-funnel-back]', funnel).forEach((btn) => {
+      btn.addEventListener('click', () => showStep(Number(btn.dataset.back) || 1));
+    });
+
+    // Der Weiter-Knopf prüft nur den Schritt, auf dem man steht. Wer die
+    // Nachricht leer lässt, käme sonst bis zum Absenden und wird erst dort
+    // zurückgeschickt.
+    $('[data-funnel-next]', funnel)?.addEventListener('click', () => {
+      const open = $$('[required]', panes[2]);
+      const bad = open.filter((input) => validateField?.(input) === false);
+      if (bad.length) { bad[0].focus({ preventScroll: false }); return; }
+      showStep(3);
+    });
+
     $$('[data-funnel-close]', funnel).forEach((btn) => {
       btn.addEventListener('click', () => funnel.close());
     });
@@ -441,6 +481,9 @@
       return ok;
     };
 
+    // Der Weiter-Knopf im Funnel prüft damit den Schritt, auf dem man steht.
+    validateField = validate;
+
     $$('input, textarea', form).forEach((input) => {
       // Erst nach dem Verlassen meckern, dann live korrigieren.
       input.addEventListener('blur', () => { if (input.required) validate(input); });
@@ -456,6 +499,11 @@
       const invalid = required.filter((input) => !validate(input));
 
       if (invalid.length) {
+        // Die Nachricht steht auf einem anderen Schritt. Ist ausgerechnet
+        // die leer, muss man erst dorthin zurück — sonst zeigt der Funnel
+        // einen Fehler zu einem Feld, das gerade niemand sieht.
+        const pane = invalid[0].closest('[data-pane]');
+        if (pane?.hidden) goToStep?.(Number(pane.dataset.pane));
         invalid[0].focus({ preventScroll: false });
         if (status) {
           status.hidden = false;
@@ -467,9 +515,9 @@
       /* Es geht bewusst nichts raus. Solange kein Backend angebunden ist,
          zeigt das Formular nur die Bestätigung, damit sich der Ablauf
          testen lässt. Später kommt hier ein fetch() auf den n8n-Webhook
-         davor, und erst dessen Antwort schaltet auf Schritt 3. */
+         davor, und erst dessen Antwort schaltet weiter. */
       if (status) { status.hidden = true; status.textContent = ''; }
-      goToStep?.(3);
+      goToStep?.(4);
       form.reset();
     });
   }
