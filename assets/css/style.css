@@ -898,18 +898,24 @@ a {
 }
 .schedule > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
 
-/* Der Kopf steht in zwei Spalten. Vorher lief der Text auf Lesebreite links
-   und rechts blieb die halbe Seite weiß — das war keine Ruhe, das war eine
-   Lücke. Jetzt hält die rechte Spalte ihre drei Wörter. */
+/* Der Kopf steht in zwei Spalten. Die linke ist genau so breit wie der Text
+   lesbar bleibt, die rechte schließt direkt daran an — vorher war die linke
+   Spalte 1fr und der Text darin auf Lesebreite gedeckelt, also standen
+   zwischen Absatz und den drei Wörtern über 400 px Nichts. Das war kein
+   Abstand mehr, das war ein Loch. */
 .schedule__head {
   margin-bottom: clamp(3rem, 6vw, 4.5rem);
   display: grid;
-  gap: clamp(2.25rem, 5vw, 4rem);
+  gap: clamp(2.25rem, 5vw, 3.5rem);
 }
 @media (min-width: 60rem) {
   .schedule__head {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 17rem);
-    align-items: start;
+    grid-template-columns: minmax(0, var(--measure)) minmax(0, max-content);
+    justify-content: start;
+    /* Die drei Wörter enden auf derselben Linie wie der Absatz daneben. Oben
+       bündig würden sie unter der Überschrift schweben; unten bündig bilden
+       beide Spalten einen gemeinsamen Boden. */
+    align-items: end;
   }
 }
 
@@ -1429,9 +1435,11 @@ a {
               opacity 480ms var(--ease-soft);
   transition-delay: var(--d, 0ms);
 }
-.js .funnel__progress[data-step="1"] .r1,
-.js .funnel__progress[data-step="2"] :is(.r1, .r2),
-.js .funnel__progress[data-step="3"] :is(.r1, .r2, .r3) {
+/* Schritt 1: nur der Horizont — zwei Striche, die Sonne steht noch darunter.
+   Schritt 2: der Fächer geht auf, licht besetzt, aber über die ganze Breite.
+   Schritt 3: die Lücken füllen sich, die Sonne steht ganz da. */
+.js .funnel__progress[data-step="2"] .ra,
+.js .funnel__progress[data-step="3"] :is(.ra, .rb) {
   stroke-dashoffset: 0; opacity: 1;
 }
 .js .funnel__progress .sun__check {
@@ -1613,6 +1621,17 @@ a {
   font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--fg-muted);
 }
+/* „freiwillig" ist kein Teil des Feldnamens. In Versalien las sich das Label
+   als „TELEFON FREIWILLIG" — ein Wort zu viel im Namen statt eine Angabe
+   dazu. Klein und gerade gesetzt steht es daneben, nicht darin. */
+.field__hint {
+  margin-left: 0.5em;
+  font-size: 0.72rem;
+  letter-spacing: 0;
+  text-transform: none;
+  font-style: italic;
+  opacity: 0.75;
+}
 .field input,
 .field select,
 .field textarea {
@@ -1642,12 +1661,26 @@ a {
 .field input::placeholder,
 .field textarea::placeholder { color: var(--fg-muted); opacity: 0.7; }
 
+/* Ein Feld ohne Rahmen darf im Fokus auch keinen bekommen. Der Kasten mit
+   4 px Abstand stieß hier von unten gegen das nächste Label — zwei Linien,
+   die nichts miteinander zu tun haben, standen 3 px voneinander entfernt.
+   Stattdessen wird der Strich, der das Feld ohnehin markiert, doppelt so
+   dick und farbig, und die Zeile bekommt einen Hauch Fläche. Das ist auch
+   für die Tastatur deutlich genug: die Markierung ist so breit wie das
+   Feld selbst. */
 .field input:focus,
 .field select:focus,
 .field textarea:focus { border-color: var(--accent); outline: none; }
+/* Der zweite Strich liegt als Schatten auf dem ersten, nicht daneben: eine
+   dickere Border würde das Feld um einen Pixel wachsen lassen und alles
+   darunter mitschieben. */
 .field input:focus-visible,
 .field select:focus-visible,
-.field textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.field textarea:focus-visible {
+  outline: none;
+  box-shadow: 0 1px 0 var(--accent);
+  background: color-mix(in oklch, var(--accent) 5%, transparent);
+}
 
 .field.is-invalid input,
 .field.is-invalid textarea { border-color: var(--alarm); }

@@ -757,20 +757,26 @@
          Zähler in Versalien hätte dasselbe gesagt und nichts bedeutet.
          Vorlesehilfen bekommen den Zähler trotzdem, siehe funnelStepLabel. -->
     <svg class="sun funnel__progress" id="funnelProgress" data-step="1" viewBox="0 0 120 64" aria-hidden="true">
+      <!-- Zwei Gruppen, nicht drei Ringe von innen nach außen. Innen nach außen
+           hieß: Schritt 1 zeigte fünf Strahlen dicht beieinander um die
+           Senkrechte — das sah nach einem Bruchstück aus, nicht nach einer
+           Sonne. Jetzt trägt .ra den ganzen Fächer, nur licht besetzt, und
+           .rb füllt die Lücken dazwischen. Beide Schritte sind eine ganze
+           Sonne, die zweite nur dichter. -->
       <g class="sun__rays">
-        <path class="r1" style="--d:0ms"   pathLength="1" d="M60 39V7"/>
-        <path class="r1" style="--d:60ms"  pathLength="1" d="M64.4 39.58 68.28 25.09"/>
-        <path class="r1" style="--d:60ms"  pathLength="1" d="M55.6 39.58 51.72 25.09"/>
-        <path class="r1" style="--d:120ms" pathLength="1" d="M68.5 41.28 83.5 15.3"/>
-        <path class="r1" style="--d:120ms" pathLength="1" d="M51.5 41.28 36.5 15.3"/>
-        <path class="r2" style="--d:0ms"   pathLength="1" d="M72.02 43.98 83.33 32.67"/>
-        <path class="r2" style="--d:0ms"   pathLength="1" d="M47.98 43.98 36.67 32.67"/>
-        <path class="r2" style="--d:80ms"  pathLength="1" d="M74.72 47.5 101.57 32"/>
-        <path class="r2" style="--d:80ms"  pathLength="1" d="M45.28 47.5 18.43 32"/>
-        <path class="r3" style="--d:0ms"   pathLength="1" d="M76.42 51.6 92.84 47.2"/>
-        <path class="r3" style="--d:0ms"   pathLength="1" d="M43.58 51.6 27.16 47.2"/>
-        <path class="r3" style="--d:80ms"  pathLength="1" d="M77 56h29"/>
-        <path class="r3" style="--d:80ms"  pathLength="1" d="M43 56H14"/>
+        <path class="ra" style="--d:0ms"   pathLength="1" d="M60 39V7"/>
+        <path class="rb" style="--d:0ms"   pathLength="1" d="M64.4 39.58 68.28 25.09"/>
+        <path class="rb" style="--d:0ms"   pathLength="1" d="M55.6 39.58 51.72 25.09"/>
+        <path class="ra" style="--d:70ms"  pathLength="1" d="M68.5 41.28 83.5 15.3"/>
+        <path class="ra" style="--d:70ms"  pathLength="1" d="M51.5 41.28 36.5 15.3"/>
+        <path class="rb" style="--d:70ms"  pathLength="1" d="M72.02 43.98 83.33 32.67"/>
+        <path class="rb" style="--d:70ms"  pathLength="1" d="M47.98 43.98 36.67 32.67"/>
+        <path class="ra" style="--d:140ms" pathLength="1" d="M74.72 47.5 101.57 32"/>
+        <path class="ra" style="--d:140ms" pathLength="1" d="M45.28 47.5 18.43 32"/>
+        <path class="rb" style="--d:140ms" pathLength="1" d="M76.42 51.6 92.84 47.2"/>
+        <path class="rb" style="--d:140ms" pathLength="1" d="M43.58 51.6 27.16 47.2"/>
+        <path class="ra" style="--d:210ms" pathLength="1" d="M77 56h29"/>
+        <path class="ra" style="--d:210ms" pathLength="1" d="M43 56H14"/>
       </g>
       <!-- Der Horizont steht von Anfang an. Die Sonne geht darüber auf, sie
            baut sich nicht selbst den Boden. -->
