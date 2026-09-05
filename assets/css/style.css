@@ -1481,8 +1481,15 @@ a {
               opacity 160ms linear 700ms;
 }
 /* Auf der Bestätigung ist alles mittig — der Satz, der Knopf, und dann darf
-   die Überschrift nicht als einzige links kleben bleiben. */
-.funnel__sheet.is-done .funnel__title { text-align: center; }
+   die Überschrift nicht als einzige links kleben bleiben.
+   Der rechte Rand fällt dabei weg: er hält sonst Platz für das Kreuz frei,
+   und 40 px Luft auf nur einer Seite verschieben eine zentrierte Zeile um
+   20 px nach links. Auf der Bestätigung steht die Überschrift ohnehin tief
+   genug, das Kreuz ist ihr nicht im Weg. */
+.funnel__sheet.is-done .funnel__title {
+  text-align: center;
+  margin-right: 0;
+}
 
 .funnel__title {
   margin: 0.5rem 2.5rem clamp(1.1rem, 3vw, 1.5rem) 0;
