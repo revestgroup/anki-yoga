@@ -58,8 +58,13 @@
 
   /* Die Hero-Headline sind zwei gleich gebaute Sätze. Die Parallele wirkt
      nur, wenn beide gleich umbrechen — deshalb ist die Stufe so gewählt,
-     dass ab Tablet je ein Satz auf eine Zeile passt. */
-  --step-hero:  clamp(2rem, 4.6vw, 3.6rem);
+     dass ab Tablet je ein Satz auf eine Zeile passt.
+     Die Untergrenze liegt bei 1,75rem statt 2rem: bei 32 px blieb am Telefon
+     von beiden Sätzen je ein letztes Wort allein auf einer Zeile — „man
+     sieht." und „spürt." standen als Waisen da, vier Zeilen für zwei Sätze.
+     Bei 28 px passt der zweite Satz auf eine Zeile und der erste bricht
+     sauber in der Mitte. */
+  --step-hero:  clamp(1.75rem, 4.6vw, 3.6rem);
   --step-said:  clamp(1.6rem, 3.2vw, 2.5rem);
   --step-h3:    clamp(1.2rem, 1.9vw, 1.5rem);
   --step-lead:  clamp(1.08rem, 0.98rem + 0.45vw, 1.28rem);
@@ -631,6 +636,21 @@ a {
      Am Telefon greift die Spaltenbreite und beide brechen zweizeilig um —
      dann aber beide gleich, weil sie fast gleich lang sind. */
   max-width: 18em;
+  /* Wo doch umgebrochen wird, sollen die Zeilen gleich lang sein statt die
+     letzte fast leer zu lassen. */
+  text-wrap: balance;
+}
+
+/* Zwei große Zeilen vertragen einen engen Durchschuss. Drei umgebrochene am
+   Telefon nicht mehr — dort stehen die Zeilen sonst aufeinander. */
+@media (max-width: 38rem) {
+  .hero__said { line-height: 1.12; }
+}
+/* Auf den schmalsten Geräten passt „Es ist das, was man spürt." bei 28 px nicht
+   mehr auf eine Zeile und „spürt." steht wieder allein. Zwei Punkt kleiner, und
+   der Satz bleibt zusammen. */
+@media (max-width: 22rem) {
+  .hero__said { font-size: 1.55rem; }
 }
 
 /* Drei Wörter, kein Satz. Kursiv gesetzt läse sich das wie ein Nachsatz zur
@@ -935,25 +955,18 @@ a {
 .schedule__intro .said { margin-bottom: clamp(0.4rem, 1vw, 0.75rem); }
 
 /* Ihre drei Wörter, jedes auf einer eigenen Zeile. Untereinander liest man sie
-   als drei Schritte; in einer Zeile waren sie ein Absatz, der mitlief. Der
-   Strich darüber ist der einzige Farbpunkt in dieser Sektion und genau 2rem
-   breit — eine Markierung, keine Trennung. */
+   als drei Schritte; in einer Zeile waren sie ein Absatz, der mitlief.
+   Gesetzt wie „Create the life you love." am Ende der Geschichte: kursiv, in
+   Violett, größer als der Absatz daneben. Der Strich darüber ist damit weg —
+   er war eine Markierung für etwas, das jetzt selbst farbig ist, und zwei
+   Marken für dieselbe Stelle sind eine zu viel. */
 .schedule__triad {
-  display: grid;
-  gap: 0.15rem;
-  padding-top: 1.4rem;
   font-family: var(--font-serif);
-  font-size: var(--step-lead);
+  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-style: italic;
   font-weight: 300;
-  line-height: 1.4;
-  color: var(--fg-strong);
-  position: relative;
-}
-.schedule__triad::before {
-  content: "";
-  position: absolute; top: 0; left: 0;
-  width: 2rem; height: 1px;
-  background: var(--accent);
+  line-height: 1.32;
+  color: var(--accent);
 }
 
 /* Drei Karten statt einer Tabelle: kein Kopfzeilen-Raster, kein seitliches
