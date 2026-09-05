@@ -284,11 +284,17 @@ a {
    jedes Mal mit einer anderen Aufgabe. */
 
 .sun { height: auto; overflow: visible; }
+/* Kein vector-effect: non-scaling-stroke. Es hält zwar die Strichstärke über
+   alle Größen gleich, macht aber die Zeichen-Animation kaputt: Chrome misst
+   das Strichmuster dann im Geräteraum, während pathLength="1" im Nutzerraum
+   normiert. Aus dem einen wachsenden Strich werden dadurch ein Dutzend
+   winziger Striche — die Sonne baut sich gesprenkelt auf und steht erst am
+   Ende richtig da. Deshalb Strichstärken in Nutzereinheiten, pro Sonne so
+   gewählt, dass sie gerendert wieder auf ihrem alten Wert landen. */
 .sun path {
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
 }
 
 /* (a) In der Leiste ist die Sonne einfach ihr Logo. Alle Striche haben
@@ -298,12 +304,12 @@ a {
    Schriftzugs endet. Kein Prozentwert: ein SVG ohne feste Breite bläht sonst
    die Rasterspalte auf ihre Standardgröße von 300 px auf. */
 .sun--progress { width: clamp(96px, 8.6vw, 108px); display: block; }
-.sun--progress path { stroke-width: 1.1px; opacity: 0.9; }
+.sun--progress path { stroke-width: 1.22; opacity: 0.9; }
 /* Dunkle Haarlinien auf Weiß wirken kräftiger als helle auf Schwarz, obwohl
    sie gleich breit sind. In der hellen Leiste deshalb minimal dünner, damit
    das Logo beim Scrollen nicht plötzlich fetter aussieht. */
 .nav.is-stuck .sun--progress path,
-.nav.is-panel .sun--progress path { stroke-width: 0.9px; }
+.nav.is-panel .sun--progress path { stroke-width: 1; }
 
 /* (b) Im Hero geht die Sonne auf, während man ankommt.
        Erst der Horizont, dann die Strahlen von innen nach außen. */
@@ -312,7 +318,7 @@ a {
   margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
   color: oklch(1 0 0 / 0.88);
 }
-.sun--hero path { stroke-width: 1.4px; }
+.sun--hero path { stroke-width: 0.98; }
 .js .sun--hero path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .js .hero.is-ready .sun--hero .sun__horizon path {
   stroke-dashoffset: 0;
@@ -342,7 +348,7 @@ a {
   max-width: 100%;
   color: var(--accent);
 }
-.sun--line path { stroke-width: 1px; }
+.sun--line path { stroke-width: 0.94; }
 
 /* Derselbe Ablauf wie im Hero: erst laufen die zwei Strahlen aus der Lücke
    nach außen, dann geht die Sonne darüber auf. */
@@ -369,7 +375,7 @@ a {
   margin-inline: auto;
   color: var(--accent);
 }
-.sun--closing path { stroke-width: 1.2px; }
+.sun--closing path { stroke-width: 0.8; }
 .js .sun--closing path { stroke-dasharray: 1; stroke-dashoffset: 1; }
 .js .sun--closing.is-in .sun__horizon path {
   stroke-dashoffset: 0;
@@ -388,7 +394,7 @@ a {
   width: clamp(108px, 12vw, 132px);
   color: var(--fg);
 }
-.sun--footer path { stroke-width: 1.1px; opacity: 0.9; }
+.sun--footer path { stroke-width: 1; opacity: 0.9; }
 
 /* ---------- 5 · BILDER ----------
    Bilder gehen auf wie die Sonne: von unten herein, während das Motiv
@@ -1424,16 +1430,29 @@ a {
               transform 760ms var(--ease),
               margin-bottom 760ms var(--ease);
 }
-.funnel__progress path { stroke-width: 1.3px; }
+/* Diese Sonne wächst von 82 auf 144 px. In Nutzereinheiten würde der Strich
+   dabei mitwachsen, also läuft er in derselben Zeit gegen — gerendert bleibt
+   er über die ganze Bewegung bei 1,3 px. */
+.funnel__progress path {
+  stroke-width: 1.9;
+  transition: stroke-width 760ms var(--ease);
+}
+.funnel__sheet.is-done .funnel__progress path { stroke-width: 1.08; }
 
 /* Die Strahlen kommen schrittweise dazu, von innen nach außen. Zusätzlich zum
-   Zeichnen eine Blende, sonst setzt jeder Strahl mit einer harten Spitze ein. */
+   Zeichnen eine Blende, sonst setzt jeder Strahl mit einer harten Spitze ein.
+   Die Strichstärke steht hier noch einmal, obwohl sie oben schon überblendet
+   wird: dieses Kürzel ersetzt die Regel darüber vollständig. Ohne die Zeile
+   springt der Strich der Strahlen sofort auf den kleinen Wert, während die
+   Sonne erst noch wächst — sie würde beim Aufgehen kurz ausfransen. Die
+   Verzögerung steht pro Eintrag statt in transition-delay, sonst käme die
+   Strichstärke bei den äußeren Strahlen 210 ms zu spät. */
 .js .funnel__progress .sun__rays path {
   stroke-dasharray: 1; stroke-dashoffset: 1;
   opacity: 0;
-  transition: stroke-dashoffset 700ms var(--ease-soft),
-              opacity 480ms var(--ease-soft);
-  transition-delay: var(--d, 0ms);
+  transition: stroke-dashoffset 700ms var(--ease-soft) var(--d, 0ms),
+              opacity 480ms var(--ease-soft) var(--d, 0ms),
+              stroke-width 760ms var(--ease);
 }
 /* Schritt 1: nur der Horizont — zwei Striche, die Sonne steht noch darunter.
    Schritt 2: der Fächer geht auf, licht besetzt, aber über die ganze Breite.
@@ -1443,7 +1462,7 @@ a {
   stroke-dashoffset: 0; opacity: 1;
 }
 .js .funnel__progress .sun__check {
-  stroke-width: 2px;
+  stroke-width: 1.67;
   stroke-dasharray: 1; stroke-dashoffset: 1;
   opacity: 0;
 }
@@ -1482,6 +1501,19 @@ a {
 /* Beide Schritte liegen im selben Sheet. `.form` setzt display: grid —
    das schlägt das hidden-Attribut, deshalb hier ausdrücklich abschalten. */
 .funnel__pane[hidden] { display: none; }
+
+/* Ein Schritt ist eine eigene Spalte. Ohne eigenes Raster hatte er gar keine
+   Abstände: der Knopf saß direkt auf dem Unterstrich des Textfelds und
+   „Zurück" klebte am Knopf. Der Abstand von .form greift nur zwischen den
+   Schritten, nicht in ihnen — deshalb hier noch einmal.
+   Bewusst nur .form__step und nicht .funnel__pane.form__step: sonst schlägt
+   die Regel das display: none der versteckten Schritte. */
+.form__step { display: grid; gap: 1.1rem; }
+/* Der Knopf schließt den Schritt ab, statt ihn fortzusetzen — er braucht mehr
+   Luft nach oben als zwei Felder untereinander. */
+.form__step > .btn { margin-top: 0.65rem; }
+/* Zurück und der Hinweis stehen unter dem Knopf, nicht an ihm. */
+.form__step > .funnel__foot { margin-top: 0.15rem; }
 
 /* Drei anfassbare Flächen statt Zeilen mit Trennstrichen. Versalien und
    Haarlinien waren der Grund, warum der Funnel wie ein Formular im
