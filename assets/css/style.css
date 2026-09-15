@@ -1351,9 +1351,6 @@ a {
 }
 .step__text { font-size: 0.94rem; line-height: 1.55; color: var(--fg); }
 
-/* Zwei Ziele, eine Zeile. Untereinander gestapelt schieben die beiden Knöpfe
-   das Ende der Sektion ohne Grund weiter nach unten. Gleich breite Spalten
-   auf dem Handy, ab Tablet nur so breit wie ihr Text. */
 /* Am Telefon untereinander. Nebeneinander blieb für „Zum dōTERRA Shop" eine
    halbe Spalte übrig, die Beschriftung brach zweizeilig um und der Knopf sah
    neben dem einzeiligen daneben kaputt aus. */
