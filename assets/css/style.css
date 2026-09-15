@@ -886,6 +886,19 @@ a {
 }
 
 .way__text { max-width: var(--measure); }
+/* Zwei Absätze hintereinander brauchen eine Lücke, sonst laufen sie zu einem
+   Block zusammen. */
+.way__text + .way__text { margin-top: 0.9rem; }
+
+/* Ein Satz, der den Titel erklärt, bevor der Absatz erklärt, wie es geht.
+   Etwas größer als der Fließtext und in der Farbe der Überschriften — sonst
+   liest er sich wie die erste Zeile des Absatzes darunter. */
+.way__lead {
+  max-width: var(--measure);
+  margin-bottom: 0.9rem;
+  font-size: var(--step-lead);
+  color: var(--fg-strong);
+}
 
 /* Die Zeile über dem Titel sagt in drei Wörtern, um welche Art Angebot es
    geht. Ohne sie muss man den ganzen Absatz lesen, um das zu wissen. */
@@ -925,10 +938,10 @@ a {
 .schedule > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
 
 /* Der Kopf steht in zwei Spalten. Die linke ist genau so breit wie der Text
-   lesbar bleibt, die rechte schließt direkt daran an — vorher war die linke
-   Spalte 1fr und der Text darin auf Lesebreite gedeckelt, also standen
-   zwischen Absatz und den drei Wörtern über 400 px Nichts. Das war kein
-   Abstand mehr, das war ein Loch. */
+   lesbar bleibt, die rechte schließt direkt daran an — wäre die linke Spalte
+   1fr und der Text darin auf Lesebreite gedeckelt, stünden zwischen Absatz und
+   den drei Wörtern über 400 px Nichts. Das wäre kein Abstand mehr, das wäre
+   ein Loch. */
 .schedule__head {
   margin-bottom: clamp(3rem, 6vw, 4.5rem);
   display: grid;
@@ -955,11 +968,9 @@ a {
 .schedule__intro .said { margin-bottom: clamp(0.4rem, 1vw, 0.75rem); }
 
 /* Ihre drei Wörter, jedes auf einer eigenen Zeile. Untereinander liest man sie
-   als drei Schritte; in einer Zeile waren sie ein Absatz, der mitlief.
+   als drei Schritte; in einer Zeile wären sie ein Absatz, der mitläuft.
    Gesetzt wie „Create the life you love." am Ende der Geschichte: kursiv, in
-   Violett, größer als der Absatz daneben. Der Strich darüber ist damit weg —
-   er war eine Markierung für etwas, das jetzt selbst farbig ist, und zwei
-   Marken für dieselbe Stelle sind eine zu viel. */
+   Violett, größer als der Absatz daneben. */
 .schedule__triad {
   font-family: var(--font-serif);
   font-size: clamp(1.25rem, 2.6vw, 1.7rem);
@@ -1295,14 +1306,19 @@ a {
 .oil__use { font-size: 0.94rem; line-height: 1.55; color: var(--fg); }
 
 .oils__how-body { display: grid; max-width: var(--measure); }
+/* Der Satz war einmal sieben Wörter lang und durfte deshalb fast so groß
+   stehen wie eine Überschrift. Jetzt sind es über vierzig — in Anzeigengröße
+   wären das fünf sehr dicke Zeilen, die der Überschrift der Sektion die Stimme
+   nehmen. Eine Stufe kleiner, dafür mit dem Durchschuss von Fließtext: immer
+   noch deutlich größer als alles andere in diesem Block, aber lesbar als Satz
+   statt als Plakat. */
 .oils__said {
-  font-size: clamp(1.3rem, 2.6vw, 1.9rem);
-  font-weight: 200;
-  line-height: 1.22;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+  font-weight: 300;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
   color: var(--fg-strong);
 }
-.oils__note { margin-top: 0.9rem; }
 
 /* Drei Karten über die volle Breite, nicht drei Zeilen unter einer Textspalte.
    Heller als der gelbe Grund — die Öl-Kacheln darüber sind dunkler als der
@@ -1334,11 +1350,16 @@ a {
 /* Zwei Ziele, eine Zeile. Untereinander gestapelt schieben die beiden Knöpfe
    das Ende der Sektion ohne Grund weiter nach unten. Gleich breite Spalten
    auf dem Handy, ab Tablet nur so breit wie ihr Text. */
+/* Am Telefon untereinander. Nebeneinander blieb für „Zum dōTERRA Shop" eine
+   halbe Spalte übrig, die Beschriftung brach zweizeilig um und der Knopf sah
+   neben dem einzeiligen daneben kaputt aus. */
 .oils__actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.6rem;
   margin-top: clamp(2rem, 3.5vw, 2.75rem);
+}
+@media (min-width: 30rem) {
+  .oils__actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 /* Schmale Spalten vertragen die volle Innenbreite der Knöpfe nicht. */
 .oils__actions .btn { padding-inline: 1rem; text-align: center; }
