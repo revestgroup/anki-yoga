@@ -1258,6 +1258,10 @@ a {
   font-size: var(--step-lead);
   line-height: 1.55;
 }
+/* Zwischen zwei Absätzen weniger Luft als zwischen Überschrift und Absatz —
+   sonst stehen beide gleich weit von allem entfernt und die Überschrift
+   verliert ihren Bezug zum ersten Absatz. */
+.oils__lead + .oils__lead { margin-top: 0.9rem; }
 
 /* Bild und die drei Öle. align-items: center, weil die Liste kürzer ist als
    das Bild und mit end sonst ein Loch entsteht. */
