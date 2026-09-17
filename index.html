@@ -424,8 +424,8 @@
 <section class="schedule" id="kursplan">
   <!-- Bevor jemand auf einen Termin klickt, will er wissen, was ihn dort
        erwartet. Deshalb steht der ausführliche Text hier und nicht in der
-       Übersichtskarte weiter oben. Rechts daneben stehen ihre drei Wörter —
-       die Spalte war vorher leer, und leer heißt hier nicht ruhig. -->
+       Übersichtskarte weiter oben. Darunter, über die volle Breite, ihre drei
+       Wörter als eigene Zeile. -->
   <div class="schedule__head">
     <div class="schedule__intro" data-reveal>
       <h2 class="said">Aktuelle Yogastunden</h2>
@@ -443,12 +443,11 @@
     </div>
 
     <!-- Kein data-reveal, sondern data-wash: die drei Wörter sind eine Abfolge,
-         also kommen sie auch nacheinander. Die Zeilen stehen als <br>, weil der
-         Zerleger die Kinder des Absatzes einsammelt — drei <span> würden dabei
-         zu einem einzigen Wort verschmelzen. -->
-    <p class="schedule__triad" data-wash>
-      Spüren.<br>Entfalten.<br>Sein.
-    </p>
+         also kommen sie auch nacheinander. Die <br> sind bewusst raus: drei
+         Wörter in einer Zeile liest man als einen Weg, untereinander als Liste.
+         Ohne Umbruch darf die Zeile zudem so groß werden, wie der Platz hergibt,
+         und bricht auf schmalen Geräten von selbst an der richtigen Stelle. -->
+    <p class="schedule__triad" data-wash>Spüren. Entfalten. Sein.</p>
   </div>
 
   <!-- Drei Stunden sind keine Tabelle. Eine Tabelle zwingt zum Vergleichen

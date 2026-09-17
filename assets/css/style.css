@@ -951,25 +951,14 @@ a {
 }
 .schedule > * { width: 100%; max-width: var(--shell); margin-inline: auto; }
 
-/* Der Kopf steht in zwei Spalten. Die linke ist genau so breit wie der Text
-   lesbar bleibt, die rechte schließt direkt daran an — wäre die linke Spalte
-   1fr und der Text darin auf Lesebreite gedeckelt, stünden zwischen Absatz und
-   den drei Wörtern über 400 px Nichts. Das wäre kein Abstand mehr, das wäre
-   ein Loch. */
+/* Der Kopf ist einspaltig: Einleitung auf Lesebreite, darunter die drei Wörter
+   über die volle Breite. Vorher standen sie als schmale zweite Spalte rechts
+   neben dem Absatz — dort konnten sie nie größer werden als die Restbreite, und
+   genau das hat sie klein gehalten. */
 .schedule__head {
   margin-bottom: clamp(3rem, 6vw, 4.5rem);
   display: grid;
   gap: clamp(2.25rem, 5vw, 3.5rem);
-}
-@media (min-width: 60rem) {
-  .schedule__head {
-    grid-template-columns: minmax(0, var(--measure)) minmax(0, max-content);
-    justify-content: start;
-    /* Die drei Wörter enden auf derselben Linie wie der Absatz daneben. Oben
-       bündig würden sie unter der Überschrift schweben; unten bündig bilden
-       beide Spalten einen gemeinsamen Boden. */
-    align-items: end;
-  }
 }
 
 .schedule__intro {
@@ -981,17 +970,32 @@ a {
    Abstand sitzt erst zwischen Kopf und Terminen. */
 .schedule__intro .said { margin-bottom: clamp(0.4rem, 1vw, 0.75rem); }
 
-/* Ihre drei Wörter, jedes auf einer eigenen Zeile. Untereinander liest man sie
-   als drei Schritte; in einer Zeile wären sie ein Absatz, der mitläuft.
-   Gesetzt wie „Create the life you love." am Ende der Geschichte: kursiv, in
-   Violett, größer als der Absatz daneben. */
+/* Ihre drei Wörter nebeneinander, als eigene Zeile über die volle Breite.
+   Nebeneinander sind sie ein Weg — Spüren führt zu Entfalten führt zu Sein.
+   Untereinander waren sie eine Aufzählung, und klein waren sie eine Bildunter-
+   schrift. Drei Wörter über drei Karten: darunter stehen genau drei Kurse, die
+   Zeile nimmt deren Takt vorweg.
+
+   Kein Flexbox: der Zerleger setzt echte Leerzeichen zwischen die Wortmasken,
+   und im Textfluss darf die Zeile auf schmalen Geräten von selbst umbrechen.
+   Als Flex-Zeile müsste ich die Abstände doppelt pflegen, und ohne JS — dann
+   steht hier nur ein Textknoten — bliebe sie ganz ohne Abstände.
+
+   Zur Größe: gemessen bei 375 px Viewport (327 px nutzbar) passen alle drei
+   Wörter bis 29 px in eine Zeile. Die 1.55rem Untergrenze liegt mit 24.8 px
+   knapp darunter, also steht die Zeile auch auf dem schmalsten Telefon am
+   Stück — und trotzdem ein Viertel größer als vorher. */
 .schedule__triad {
   font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+  font-size: clamp(1.55rem, 6.2vw, 3.4rem);
   font-style: italic;
   font-weight: 300;
-  line-height: 1.32;
+  line-height: 1.18;
   color: var(--accent);
+  /* Die Punkte schließen jedes Wort ab; ohne etwas mehr Luft kleben die drei
+     Teile aneinander und lesen sich wieder als ein Satz. */
+  word-spacing: 0.16em;
+  text-wrap: balance;
 }
 
 /* Drei Karten statt einer Tabelle: kein Kopfzeilen-Raster, kein seitliches
