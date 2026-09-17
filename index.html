@@ -15,13 +15,31 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Anki Strahl — Somatic Yin Yoga &amp; ätherische Öle">
 <meta property="og:description" content="Yoga ist mehr als nur ein Work-out. Es ist dein Work-in.">
-<meta property="og:image" content="assets/img/hero-anki.jpg">
+<!-- Das Vorschaubild für WhatsApp, Instagram und Facebook. Bewusst das
+     Querformat: die Vorschaukarten sind rund 1200 × 630 Pixel, ein
+     Hochformat wird dort oben und unten abgeschnitten.
+     ACHTUNG vor dem Launch: og:image muss eine vollständige Adresse mit
+     https:// sein, sonst zeigt keine Plattform ein Bild an. Sobald die
+     Domain steht, hier absolut eintragen. -->
+<meta property="og:image" content="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl.jpg">
+<meta property="og:image:alt" content="Anki Strahl in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront">
 <meta property="og:locale" content="de_DE">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300..600&family=Literata:ital,opsz,wght@0,7..72,200..600;1,7..72,200..500&display=swap">
-<link rel="preload" as="image" href="assets/img/hero-anki.jpg" fetchpriority="high">
+<!-- Das Hero-Bild ist das größte Element im ersten Bildschirm und bestimmt
+     damit den LCP-Wert. Es wird vorgeladen, bevor der Browser das CSS
+     gelesen hat. Weil es jetzt in einem <picture> steckt, muss der Preload
+     dieselbe Auswahl treffen wie das <picture> später — sonst lädt der
+     Browser zweimal: einmal die vorgeladene Datei, einmal die, für die er
+     sich dann wirklich entscheidet. Deshalb hier derselbe Satz Stufen und
+     dasselbe sizes wie unten am Bild. -->
+<link rel="preload" as="image" type="image/avif" fetchpriority="high"
+      imagesrcset="assets/img/anki-strahl-yogalehrerin-ehingen-480.avif 480w,
+                   assets/img/anki-strahl-yogalehrerin-ehingen-768.avif 768w,
+                   assets/img/anki-strahl-yogalehrerin-ehingen-1066.avif 1066w"
+      imagesizes="100vw">
 <link rel="stylesheet" href="assets/css/style.css">
 <script>document.documentElement.classList.add('js');</script>
 </head>
@@ -100,9 +118,18 @@
 <section class="hero on-night" id="top">
   <div class="hero__bg">
     <div class="hero__shift" data-parallax="0.10">
-      <img class="hero__img" src="assets/img/hero-anki.jpg"
-           alt="Anki Strahl sitzt mit geschlossenen Augen auf dem Boden"
-           fetchpriority="high" width="1066" height="1600">
+      <!-- Randlos über die ganze Breite, deshalb sizes="100vw". Kein
+           loading="lazy": das Bild steht im ersten Bildschirm, verzögertes
+           Laden würde den LCP verschlechtern statt verbessern. -->
+      <picture>
+        <source type="image/avif" sizes="100vw"
+                srcset="assets/img/anki-strahl-yogalehrerin-ehingen-480.avif 480w,
+                        assets/img/anki-strahl-yogalehrerin-ehingen-768.avif 768w,
+                        assets/img/anki-strahl-yogalehrerin-ehingen-1066.avif 1066w">
+        <img class="hero__img" src="assets/img/anki-strahl-yogalehrerin-ehingen.jpg"
+             alt="Yogalehrerin Anki Strahl sitzt mit geschlossenen Augen im Schneidersitz auf dem Boden"
+             fetchpriority="high" width="1066" height="1600">
+      </picture>
     </div>
     <span class="hero__scrim" aria-hidden="true"></span>
   </div>
@@ -173,19 +200,37 @@
     <div class="story__trio">
       <figure class="shot trio trio--a" data-reveal data-parallax="-0.02">
         <span class="shot__clip">
-          <img src="assets/img/kontakt-anki.jpg" alt="Anki sitzt lächelnd im Schneidersitz vor einer hellen Wand" loading="lazy" width="1040" height="1600">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 32vw, 87vw"
+                    srcset="assets/img/anki-strahl-yoga-kontakt-480.avif 480w,
+                          assets/img/anki-strahl-yoga-kontakt-768.avif 768w,
+                          assets/img/anki-strahl-yoga-kontakt-1040.avif 1040w">
+            <img src="assets/img/anki-strahl-yoga-kontakt.jpg" alt="Anki Strahl sitzt lächelnd im Schneidersitz vor einer hellen Wand" loading="lazy" width="1040" height="1600">
+          </picture>
         </span>
       </figure>
 
       <figure class="shot trio trio--b" data-reveal data-parallax="-0.05">
         <span class="shot__clip">
-          <img src="assets/img/story-heute.jpg" alt="Anki sitzt lachend auf einem Ledersessel vor einem hellen Vorhang" loading="lazy" width="1066" height="1600">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 26vw, 42vw"
+                    srcset="assets/img/anki-strahl-yogalehrerin-portrait-480.avif 480w,
+                          assets/img/anki-strahl-yogalehrerin-portrait-768.avif 768w,
+                          assets/img/anki-strahl-yogalehrerin-portrait-1066.avif 1066w">
+            <img src="assets/img/anki-strahl-yogalehrerin-portrait.jpg" alt="Anki Strahl lacht auf einem Ledersessel vor einem hellen Vorhang" loading="lazy" width="1066" height="1600">
+          </picture>
         </span>
       </figure>
 
       <figure class="shot trio trio--c" data-reveal data-parallax="-0.03">
         <span class="shot__clip">
-          <img src="assets/img/weg-kraft.jpg" alt="Anki hält einen seitlichen Stütz im Gegenlicht einer großen Fensterfront" loading="lazy" width="1066" height="1600">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 22vw, 42vw"
+                    srcset="assets/img/yoga-seitstuetz-anki-strahl-480.avif 480w,
+                          assets/img/yoga-seitstuetz-anki-strahl-768.avif 768w,
+                          assets/img/yoga-seitstuetz-anki-strahl-1066.avif 1066w">
+            <img src="assets/img/yoga-seitstuetz-anki-strahl.jpg" alt="Anki Strahl hält einen seitlichen Stütz im Gegenlicht einer großen Fensterfront" loading="lazy" width="1066" height="1600">
+          </picture>
         </span>
       </figure>
     </div>
@@ -233,7 +278,14 @@
 
       <figure class="shot shot--tall" data-reveal>
         <span class="shot__clip">
-          <img src="assets/img/weg-vinyasa.jpg" alt="Anki hält einen tiefen Ausfallschritt, die Hände vor dem Herzen" loading="lazy" width="1600" height="1066">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 46vw, 87vw"
+                    srcset="assets/img/vinyasa-yoga-anki-strahl-480.avif 480w,
+                          assets/img/vinyasa-yoga-anki-strahl-768.avif 768w,
+                          assets/img/vinyasa-yoga-anki-strahl-1200.avif 1200w,
+                          assets/img/vinyasa-yoga-anki-strahl-1600.avif 1600w">
+            <img src="assets/img/vinyasa-yoga-anki-strahl.jpg" alt="Vinyasa Yoga: Anki Strahl im tiefen Ausfallschritt, die Hände vor dem Herzen" loading="lazy" width="1600" height="1066">
+          </picture>
         </span>
       </figure>
     </div>
@@ -255,8 +307,14 @@
      braucht Überstand, und Überstand heißt oben und unten abgeschnitten. -->
 <section class="light" aria-label="Im Studio">
   <div class="light__media">
-    <img src="assets/img/licht.jpg" alt="Anki in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront auf den Boden"
-         loading="lazy" width="1600" height="1066">
+    <picture>
+      <source type="image/avif" sizes="100vw"
+              srcset="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-480.avif 480w,
+                    assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-768.avif 768w,
+                    assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-1200.avif 1200w,
+                    assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-1600.avif 1600w">
+      <img src="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl.jpg" alt="Anki Strahl in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront auf den Studioboden" loading="lazy" width="1600" height="1066">
+    </picture>
   </div>
 </section>
 
@@ -267,7 +325,13 @@
   <article class="way" data-reveal>
     <figure class="shot way__media">
       <span class="shot__clip">
-        <img src="assets/img/weg-yin.jpg" alt="Anki im Profil, die Hände vor dem Herzen, heller Vorhang im Hintergrund" loading="lazy" width="1066" height="1600">
+        <picture>
+          <source type="image/avif" sizes="(min-width: 60rem) 33vw, 87vw"
+                  srcset="assets/img/somatic-yin-yoga-anki-strahl-480.avif 480w,
+                        assets/img/somatic-yin-yoga-anki-strahl-768.avif 768w,
+                        assets/img/somatic-yin-yoga-anki-strahl-1066.avif 1066w">
+          <img src="assets/img/somatic-yin-yoga-anki-strahl.jpg" alt="Somatic Yin Yoga: Anki Strahl im Profil, die Hände vor dem Herzen" loading="lazy" width="1066" height="1600">
+        </picture>
       </span>
     </figure>
     <div class="way__body">
@@ -289,7 +353,14 @@
   <article class="way way--flip" data-reveal>
     <figure class="shot way__media">
       <span class="shot__clip">
-        <img src="assets/img/weg-retreat.jpg" alt="Anki im Halbmond im Studio, daneben Pampasgras und eine Holzleiter" loading="lazy" width="1600" height="1066">
+        <picture>
+          <source type="image/avif" sizes="(min-width: 60rem) 46vw, 87vw"
+                  srcset="assets/img/yoga-retreat-anki-strahl-480.avif 480w,
+                        assets/img/yoga-retreat-anki-strahl-768.avif 768w,
+                        assets/img/yoga-retreat-anki-strahl-1200.avif 1200w,
+                        assets/img/yoga-retreat-anki-strahl-1600.avif 1600w">
+          <img src="assets/img/yoga-retreat-anki-strahl.jpg" alt="Yoga-Retreat: Anki Strahl im Halbmond, daneben Pampasgras und eine Holzleiter" loading="lazy" width="1600" height="1066">
+        </picture>
       </span>
     </figure>
     <div class="way__body">
@@ -310,7 +381,13 @@
   <article class="way" data-reveal>
     <figure class="shot way__media">
       <span class="shot__clip">
-        <img src="assets/img/oele-drei.jpg" alt="Anki lacht und hält drei dōTERRA-Fläschchen in den Händen" loading="lazy" width="1066" height="1600">
+        <picture>
+          <source type="image/avif" sizes="(min-width: 60rem) 33vw, 87vw"
+                  srcset="assets/img/doterra-aetherische-oele-beratung-480.avif 480w,
+                        assets/img/doterra-aetherische-oele-beratung-768.avif 768w,
+                        assets/img/doterra-aetherische-oele-beratung-1066.avif 1066w">
+          <img src="assets/img/doterra-aetherische-oele-beratung.jpg" alt="Anki Strahl lacht und hält drei Fläschchen ätherische Öle von dōTERRA in den Händen" loading="lazy" width="1066" height="1600">
+        </picture>
       </span>
     </figure>
     <div class="way__body">
@@ -419,7 +496,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/story-heute.jpg" alt="Anki lacht im Sessel" loading="lazy" width="1066" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/anki-strahl-yogalehrerin-portrait-480.avif 480w,
+                            assets/img/anki-strahl-yogalehrerin-portrait-768.avif 768w,
+                            assets/img/anki-strahl-yogalehrerin-portrait-1066.avif 1066w">
+              <img src="assets/img/anki-strahl-yogalehrerin-portrait.jpg" alt="Anki Strahl lacht im Sessel" loading="lazy" width="1066" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -427,7 +510,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/oele-drei.jpg" alt="Anki hält drei Fläschchen ätherisches Öl in den Händen" loading="lazy" width="1066" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/doterra-aetherische-oele-beratung-480.avif 480w,
+                            assets/img/doterra-aetherische-oele-beratung-768.avif 768w,
+                            assets/img/doterra-aetherische-oele-beratung-1066.avif 1066w">
+              <img src="assets/img/doterra-aetherische-oele-beratung.jpg" alt="Drei Fläschchen ätherische Öle von dōTERRA" loading="lazy" width="1066" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -435,7 +524,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/weg-kraft.jpg" alt="Anki im seitlichen Stütz vor der Fensterfront" loading="lazy" width="1066" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/yoga-seitstuetz-anki-strahl-480.avif 480w,
+                            assets/img/yoga-seitstuetz-anki-strahl-768.avif 768w,
+                            assets/img/yoga-seitstuetz-anki-strahl-1066.avif 1066w">
+              <img src="assets/img/yoga-seitstuetz-anki-strahl.jpg" alt="Anki Strahl im seitlichen Stütz vor der Fensterfront" loading="lazy" width="1066" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -443,7 +538,14 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/weg-vinyasa.jpg" alt="Anki im tiefen Ausfallschritt mit gefalteten Händen" loading="lazy" width="1600" height="1066">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/vinyasa-yoga-anki-strahl-480.avif 480w,
+                            assets/img/vinyasa-yoga-anki-strahl-768.avif 768w,
+                            assets/img/vinyasa-yoga-anki-strahl-1200.avif 1200w,
+                            assets/img/vinyasa-yoga-anki-strahl-1600.avif 1600w">
+              <img src="assets/img/vinyasa-yoga-anki-strahl.jpg" alt="Anki Strahl im tiefen Ausfallschritt mit gefalteten Händen" loading="lazy" width="1600" height="1066">
+            </picture>
           </span>
         </figure>
       </li>
@@ -451,7 +553,14 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/oele-sofa.jpg" alt="Anki liegt lachend auf dem Sofa, daneben zwei Fläschchen" loading="lazy" width="1600" height="1066">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/aetherische-oele-ritual-alltag-480.avif 480w,
+                            assets/img/aetherische-oele-ritual-alltag-768.avif 768w,
+                            assets/img/aetherische-oele-ritual-alltag-1200.avif 1200w,
+                            assets/img/aetherische-oele-ritual-alltag-1600.avif 1600w">
+              <img src="assets/img/aetherische-oele-ritual-alltag.jpg" alt="Anki Strahl liegt lachend auf dem Sofa, daneben zwei Ölfläschchen" loading="lazy" width="1600" height="1066">
+            </picture>
           </span>
         </figure>
       </li>
@@ -459,7 +568,14 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/licht.jpg" alt="Anki in einer Rückbeuge im Gegenlicht" loading="lazy" width="1600" height="1066">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-480.avif 480w,
+                            assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-768.avif 768w,
+                            assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-1200.avif 1200w,
+                            assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl-1600.avif 1600w">
+              <img src="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl.jpg" alt="Anki Strahl in einer Rückbeuge im Gegenlicht" loading="lazy" width="1600" height="1066">
+            </picture>
           </span>
         </figure>
       </li>
@@ -467,7 +583,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/oele-haende.jpg" alt="Anki sitzt im Schneidersitz und hält Ölfläschchen" loading="lazy" width="1066" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/aetherische-oele-beratung-anki-strahl-480.avif 480w,
+                            assets/img/aetherische-oele-beratung-anki-strahl-768.avif 768w,
+                            assets/img/aetherische-oele-beratung-anki-strahl-1066.avif 1066w">
+              <img src="assets/img/aetherische-oele-beratung-anki-strahl.jpg" alt="Anki Strahl sitzt im Schneidersitz und hält ätherische Öle" loading="lazy" width="1066" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -475,7 +597,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/oele-auftakt.jpg" alt="Ätherische Öle auf dem Boden, Anki sitzt unscharf dahinter" loading="lazy" width="1066" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/aetherische-oele-doterra-flaeschchen-480.avif 480w,
+                            assets/img/aetherische-oele-doterra-flaeschchen-768.avif 768w,
+                            assets/img/aetherische-oele-doterra-flaeschchen-1066.avif 1066w">
+              <img src="assets/img/aetherische-oele-doterra-flaeschchen.jpg" alt="Ätherische Öle stehen auf dem Boden, Anki Strahl sitzt unscharf dahinter" loading="lazy" width="1066" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -483,7 +611,13 @@
       <li class="slide">
         <figure class="shot">
           <span class="shot__clip">
-            <img src="assets/img/kontakt-anki.jpg" alt="Anki sitzt im Schneidersitz und schaut in die Kamera" loading="lazy" width="1040" height="1600">
+            <picture>
+              <source type="image/avif" sizes="(min-width: 26rem) 304px, 74vw"
+                      srcset="assets/img/anki-strahl-yoga-kontakt-480.avif 480w,
+                            assets/img/anki-strahl-yoga-kontakt-768.avif 768w,
+                            assets/img/anki-strahl-yoga-kontakt-1040.avif 1040w">
+              <img src="assets/img/anki-strahl-yoga-kontakt.jpg" alt="Anki Strahl sitzt im Schneidersitz und schaut in die Kamera" loading="lazy" width="1040" height="1600">
+            </picture>
           </span>
         </figure>
       </li>
@@ -602,7 +736,13 @@
   <div class="oils__duo">
     <figure class="shot oils__shot" data-reveal>
       <span class="shot__clip">
-        <img src="assets/img/oele-auftakt.jpg" alt="Die Ölfläschchen einzeln auf dem Boden, Anki sitzt unscharf dahinter" loading="lazy" width="1066" height="1600">
+        <picture>
+          <source type="image/avif" sizes="(min-width: 60rem) 38vw, 90vw"
+                  srcset="assets/img/aetherische-oele-doterra-flaeschchen-480.avif 480w,
+                        assets/img/aetherische-oele-doterra-flaeschchen-768.avif 768w,
+                        assets/img/aetherische-oele-doterra-flaeschchen-1066.avif 1066w">
+          <img src="assets/img/aetherische-oele-doterra-flaeschchen.jpg" alt="Fläschchen mit ätherischen Ölen auf dem Boden, Anki Strahl sitzt unscharf dahinter" loading="lazy" width="1066" height="1600">
+        </picture>
       </span>
     </figure>
 
@@ -639,13 +779,26 @@
     <div class="oils__pair">
       <figure class="shot oils__shot" data-reveal data-parallax="-0.03">
         <span class="shot__clip">
-          <img src="assets/img/oele-sofa.jpg" alt="Anki liegt auf dem Sofa, vor ihr stehen zwei Fläschchen" loading="lazy" width="1600" height="1066">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 19vw, 43vw"
+                    srcset="assets/img/aetherische-oele-ritual-alltag-480.avif 480w,
+                          assets/img/aetherische-oele-ritual-alltag-768.avif 768w,
+                          assets/img/aetherische-oele-ritual-alltag-1200.avif 1200w,
+                          assets/img/aetherische-oele-ritual-alltag-1600.avif 1600w">
+            <img src="assets/img/aetherische-oele-ritual-alltag.jpg" alt="Anki Strahl liegt auf dem Sofa, vor ihr stehen zwei Ölfläschchen" loading="lazy" width="1600" height="1066">
+          </picture>
         </span>
       </figure>
 
       <figure class="shot oils__shot" data-reveal data-parallax="-0.06">
         <span class="shot__clip">
-          <img src="assets/img/oele-haende.jpg" alt="Anki sitzt auf dem Boden und hält die Fläschchen in beiden Händen" loading="lazy" width="1066" height="1600">
+          <picture>
+            <source type="image/avif" sizes="(min-width: 60rem) 19vw, 43vw"
+                    srcset="assets/img/aetherische-oele-beratung-anki-strahl-480.avif 480w,
+                          assets/img/aetherische-oele-beratung-anki-strahl-768.avif 768w,
+                          assets/img/aetherische-oele-beratung-anki-strahl-1066.avif 1066w">
+            <img src="assets/img/aetherische-oele-beratung-anki-strahl.jpg" alt="Anki Strahl hält zwei Fläschchen ätherische Öle in beiden Händen" loading="lazy" width="1066" height="1600">
+          </picture>
         </span>
       </figure>
     </div>

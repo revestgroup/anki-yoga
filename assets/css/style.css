@@ -168,6 +168,15 @@ body {
 h1, h2, h3, p, figure, figcaption, blockquote, dl, dd { margin: 0; }
 ul, ol { margin: 0; padding: 0; }
 img, svg { display: block; max-width: 100%; }
+
+/* Jedes Foto steckt in einem <picture>, das dem Browser AVIF anbietet und
+   das JPEG als Rückfalloption behält. Diese Hülle soll im Layout nicht
+   existieren: mit display:contents erzeugt sie keine eigene Box, das <img>
+   steht weiterhin genau dort, wo vorher das <img> stand. Ohne diese Zeile
+   müsste jede Regel wie „.shot img" oder „.light__media img" eine zweite
+   für die Hülle bekommen, und Grid- wie Flex-Kinder wären plötzlich das
+   <picture> statt das Bild. */
+picture { display: contents; }
 button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; padding: 0; }
 table { border-collapse: collapse; }
 
