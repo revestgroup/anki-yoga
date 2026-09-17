@@ -29,6 +29,20 @@
 #   Ist keine Stufe so groß wie das Original, kommt die native Breite als
 #   oberste Stufe dazu (die Hochformate sind 1040 bzw. 1066 px breit).
 #
+# Warum die Höhe von Hand ausgerechnet und auf gerade gerundet wird:
+#   Mit --resampleWidth allein rechnet sips die Höhe selbst aus und rundet
+#   dabei auch auf ungerade Werte: 1600×1066 wurde bei Breite 1200 zu
+#   1200×799. Bei ungerader Kantenlänge erzeugt sips eine Kachel-AVIF, deren
+#   Kacheln nicht aufgehen — die Datei hat die richtige Größe in Bytes, meldet
+#   im Browser die richtigen Maße, dekodiert aber vollständig durchsichtig.
+#   Man sieht nur einen leeren Kasten, und weil das Bild formal "geladen" ist,
+#   meldet weder die Konsole noch img.complete einen Fehler. Das hat fünf von
+#   vierzig Dateien betroffen (alle vier 1200×799 und eine 768×1181), während
+#   dieselben Bilder in 480, 768 und 1600 px einwandfrei waren.
+#   Deshalb: Höhe selbst ausrechnen und auf einen geraden Wert abrunden. Der
+#   Unterschied von höchstens einer Pixelzeile ist unsichtbar, alle Bilder
+#   stehen ohnehin unter object-fit: cover.
+#
 # Aufruf aus dem Projektverzeichnis:
 #   bash tools/build-images.sh
 #
@@ -64,20 +78,25 @@ for quelle in "$IMG_DIR"/*.jpg; do
   fi
 
   nativ=$(sips -g pixelWidth "$quelle" | awk '/pixelWidth/{print $2}')
+  nativ_h=$(sips -g pixelHeight "$quelle" | awk '/pixelHeight/{print $2}')
   erzeugt=""
   groesste=0
 
   for breite in "${STUFEN[@]}"; do
     (( breite > nativ )) && continue
+    # kaufmännisch runden, danach auf gerade abrunden (siehe Kopf)
+    hoehe=$(( (nativ_h * breite + nativ / 2) / nativ ))
+    hoehe=$(( hoehe - hoehe % 2 ))
     sips -s format avif -s formatOptions "$QUALITY" \
-         --resampleWidth "$breite" "$quelle" \
+         --resampleHeightWidth "$hoehe" "$breite" "$quelle" \
          --out "${basis}-${breite}.avif" >/dev/null
     erzeugt="${erzeugt:+$erzeugt,}$breite"
     groesste=$breite
   done
 
   if [[ ! -f "${basis}-${nativ}.avif" ]]; then
-    sips -s format avif -s formatOptions "$QUALITY" "$quelle" \
+    sips -s format avif -s formatOptions "$QUALITY" \
+         --resampleHeightWidth $(( nativ_h - nativ_h % 2 )) $(( nativ - nativ % 2 )) "$quelle" \
          --out "${basis}-${nativ}.avif" >/dev/null
     erzeugt="${erzeugt:+$erzeugt,}$nativ"
     groesste=$nativ
@@ -97,3 +116,21 @@ echo
 printf 'Größte Stufe gesamt: %s KB AVIF statt %s KB JPEG (%s %%)\n' \
   $(( gesamt_avif / 1024 )) $(( gesamt_jpg / 1024 )) \
   $(( 100 - gesamt_avif * 100 / gesamt_jpg ))
+
+# Letzte Kontrolle: eine ungerade Kantenlänge ist der Auslöser für die leeren
+# Kachel-AVIF (siehe Kopf). Der Fehler ist im Browser nicht zu erkennen — das
+# Bild gilt als geladen und bleibt trotzdem unsichtbar. Deshalb hier abbrechen,
+# statt eine unsichtbare Datei ins Repository zu lassen.
+ungerade=0
+for datei in "$IMG_DIR"/*.avif; do
+  masse=$(sips -g pixelWidth -g pixelHeight "$datei" | awk '/pixel/{print $2}')
+  breite=$(echo "$masse" | head -1)
+  hoehe=$(echo "$masse" | tail -1)
+  if (( breite % 2 || hoehe % 2 )); then
+    printf 'FEHLER: %s ist %sx%s — ungerade Kante, wird durchsichtig dekodieren\n' \
+      "$(basename "$datei")" "$breite" "$hoehe"
+    ungerade=1
+  fi
+done
+(( ungerade )) && exit 1
+echo "Alle AVIF haben gerade Kantenlängen."
