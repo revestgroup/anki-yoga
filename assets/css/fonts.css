@@ -1,0 +1,32 @@
+/* Diese Datei wird erzeugt — nicht von Hand ändern.
+   Quelle: tools/build-fonts.py, dort steht auch die Begründung.
+
+   font-display: swap heißt: bis die Schrift geladen ist, zeigt der Browser
+   die Ersatzschrift aus --font-serif bzw. --font-sans. Ein kurzer Sprung ist
+   besser als ein leerer Bildschirm.
+
+   Lizenz: SIL Open Font License 1.1, siehe assets/fonts/OFL.txt. */
+
+@font-face {
+  font-family: 'Literata';
+  font-style: normal;
+  font-weight: 200 600;
+  font-display: swap;
+  src: url('../fonts/literata.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Literata';
+  font-style: italic;
+  font-weight: 200 500;
+  font-display: swap;
+  src: url('../fonts/literata-italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('../fonts/jost.woff2') format('woff2');
+}

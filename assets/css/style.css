@@ -538,8 +538,14 @@ a {
   height: 1px; background: currentColor;
   transition: transform var(--dur-state) var(--ease);
 }
-.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:first-child { transform: translateY(2.5px) rotate(6deg); }
-.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:last-child  { transform: translateY(-2.5px) rotate(-6deg); }
+/* Im offenen Zustand wird aus den zwei Strichen ein Kreuz. Die 2.5px sind
+   nicht geraten: die Striche sind 1px hoch mit 4px Abstand, ihre Mitten
+   liegen also genau 2.5px über und unter der Mitte des Stapels. Verschoben
+   decken sie sich exakt, erst dadurch ergibt die Drehung ein sauberes X.
+   Vorher standen hier 6° — viel zu wenig, um als Schließen gelesen zu
+   werden; das sah nach einem verrutschten Menü-Symbol aus. */
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:first-child { transform: translateY(2.5px) rotate(45deg); }
+.nav__toggle[aria-expanded="true"] .nav__toggle-bars i:last-child  { transform: translateY(-2.5px) rotate(-45deg); }
 
 @media (max-width: 30rem) { .nav__mark-word { font-size: 0.64rem; letter-spacing: 0.055em; } }
 @media (min-width: 64rem) {
@@ -577,7 +583,6 @@ a {
   transition: opacity 500ms var(--ease), transform 500ms var(--ease);
   transition-delay: calc(60ms + var(--i, 0) * 45ms);
 }
-.nav-panel__cta { align-self: flex-start; }
 
 /* ---------- 7 · HERO ---------- */
 

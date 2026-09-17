@@ -25,9 +25,20 @@
 <meta property="og:image:alt" content="Anki Strahl in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront">
 <meta property="og:locale" content="de_DE">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300..600&family=Literata:ital,opsz,wght@0,7..72,200..600;1,7..72,200..500&display=swap">
+<!-- Die Schriften liegen auf demselben Server wie die Seite. Vorher kamen sie
+     von fonts.googleapis.com — das kostete zwei fremde Verbindungen, bevor
+     das erste Wort stand, und schickte die IP jedes Besuchers zu Google in
+     die USA. Erzeugt von tools/build-fonts.py, dort steht die ganze
+     Begründung und der Zeichensatz.
+
+     Vorgeladen werden die zwei Schnitte, die im ersten Bildschirm stehen:
+     Literata setzt die Überschrift, Jost den Schriftzug und das Menü. Die
+     Kursive kommt erst weiter unten vor und darf warten.
+     crossorigin ist bei Schriften auch same-origin Pflicht — ohne das
+     Attribut lädt der Browser die Datei ein zweites Mal. -->
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/literata.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="assets/fonts/jost.woff2">
+<link rel="stylesheet" href="assets/css/fonts.css">
 <!-- Das Hero-Bild ist das größte Element im ersten Bildschirm und bestimmt
      damit den LCP-Wert. Es wird vorgeladen, bevor der Browser das CSS
      gelesen hat. Weil es jetzt in einem <picture> steckt, muss der Preload
@@ -107,7 +118,6 @@
     <a href="#instagram">Alltag</a>
     <a href="#oele">Ätherische Öle</a>
   </nav>
-  <button class="btn btn--primary nav-panel__cta" type="button" data-funnel>Schreib mir</button>
 </div>
 
 <main id="main">
