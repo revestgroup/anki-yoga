@@ -4,26 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anki Strahl — Somatic Yin Yoga &amp; ätherische Öle bei Ehingen</title>
-<meta name="description" content="Somatic Yin Yoga, Vinyasa und Hatha bei Anki Strahl. Feste Stunden in Untermarchtal, Oberstadion und Ingerkingen, dazu Retreats, Yoga-Hypnose, Rauhnächte und Beratung zu ätherischen Ölen.">
+<!-- Rund 150 Zeichen. Google schneidet Beschreibungen etwa dort ab; der
+     vorherige Text war 200 Zeichen lang und endete im Nichts. -->
+<meta name="description" content="Somatic Yin Yoga, Vinyasa und Hatha bei Anki Strahl. Feste Stunden in Untermarchtal, Oberstadion und Ingerkingen – dazu Retreats und ätherische Öle.">
 <meta name="theme-color" content="#1a1420">
 
-<!-- Solange die Seite nur auf der Testdomain liegt und Impressum wie
-     Datenschutz Platzhalter sind, soll sie nicht in Suchmaschinen landen.
-     Vor dem echten Launch diese Zeile entfernen. -->
-<meta name="robots" content="noindex, nofollow">
+<!-- Die Seite darf in den Index. Das frühere noindex, nofollow ist entfernt. -->
+<link rel="canonical" href="https://anki-yoga.de/">
 
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://anki-yoga.de/">
+<meta property="og:site_name" content="Anki Strahl">
 <meta property="og:title" content="Anki Strahl — Somatic Yin Yoga &amp; ätherische Öle">
 <meta property="og:description" content="Yoga ist mehr als nur ein Work-out. Es ist dein Work-in.">
 <!-- Das Vorschaubild für WhatsApp, Instagram und Facebook. Bewusst das
      Querformat: die Vorschaukarten sind rund 1200 × 630 Pixel, ein
      Hochformat wird dort oben und unten abgeschnitten.
-     ACHTUNG vor dem Launch: og:image muss eine vollständige Adresse mit
-     https:// sein, sonst zeigt keine Plattform ein Bild an. Sobald die
-     Domain steht, hier absolut eintragen. -->
-<meta property="og:image" content="assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl.jpg">
+     Die Adresse muss absolut sein — mit einem relativen Pfad zeigt keine
+     Plattform ein Bild an, weil sie die Datei nicht auflösen kann. -->
+<meta property="og:image" content="https://anki-yoga.de/assets/img/yoga-rueckbeuge-gegenlicht-anki-strahl.jpg">
 <meta property="og:image:alt" content="Anki Strahl in einer Rückbeuge, das Sonnenlicht fällt durch die Fensterfront">
 <meta property="og:locale" content="de_DE">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Ein SVG als Favicon: eine Datei für alle Auflösungen, kein Nachschärfen
+     nötig. Das apple-touch-icon bleibt PNG, weil iOS kein SVG akzeptiert. -->
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 
 <!-- Die Schriften liegen auf demselben Server wie die Seite. Vorher kamen sie
      von fonts.googleapis.com — das kostete zwei fremde Verbindungen, bevor
@@ -726,11 +732,23 @@
 
     <h2 class="said" data-reveal>Ätherische Öle – kleine Rituale für deinen Alltag.</h2>
 
+    <!-- Hier stand vorher, die Öle würden "für mehr Ruhe, Fokus und erholsamen
+         Schlaf" sorgen und "dein Nervensystem begleiten". Das sind gesundheits-
+         bezogene Angaben: Sie behaupten eine Wirkung auf Körperfunktionen. Für
+         ätherische Öle ist in der EU kein einziger solcher Claim zugelassen
+         (Verordnung 1924/2006; bei Kosmetik zusätzlich Art. 20 der Kosmetik-VO).
+         "Nervensystem" ist dabei der heikelste Begriff überhaupt.
+
+         Der Text sagt jetzt dasselbe Gefühl, ohne etwas zu versprechen: Duft,
+         Anlass, Ritual statt Wirkung. Erlaubt bleibt, wie Anki die Öle selbst
+         benutzt — verboten ist, was sie angeblich im Körper tun. Deshalb auch
+         "bevor es abends ruhig wird" statt "für erholsamen Schlaf": derselbe
+         Moment, aber als Tageszeit und nicht als Versprechen. -->
     <p class="oils__lead" data-reveal>
-      100 % reine ätherische Öle können zu kleinen Alltagsbegleitern werden, die
-      besondere Momente schaffen und dich ganz bewusst unterstützen – für mehr Ruhe,
-      Fokus und erholsamen Schlaf oder um dein mentales Wohlbefinden und dein
-      Nervensystem zu begleiten.
+      100 % reine ätherische Öle sind bei mir kleine Alltagsbegleiter. Ein Tropfen
+      im Diffuser, wenn der Tag beginnt. Ein Duft, der einen Moment markiert – beim
+      Lesen, nach einer langen Woche, bevor es abends ruhig wird. Für mich sind sie
+      vor allem ein Ritual: kurz innehalten, bewusst da sein.
     </p>
 
     <!-- Der Satz, der die drei Kacheln darunter einleitet. Ohne ihn stehen
@@ -823,7 +841,13 @@
     </li>
     <li class="step">
       <b class="step__name">Öl-Wochen</b>
-      <span class="step__text">Eine Woche, ein Thema. Schlaf, Fokus, Schwangerschaft oder Haut.</span>
+      <!-- "Schlaf, Fokus, Schwangerschaft oder Haut" ist raus. Schwangerschaft
+           ist hier der kritischste Punkt der ganzen Seite: etliche ätherische
+           Öle sind in der Schwangerschaft ausdrücklich nicht empfohlen, und sie
+           als Themenwoche zu bewerben, ist heikel — unabhängig davon, wie
+           umsichtig Anki im Gespräch berät. Die Themen heißen jetzt nach dem
+           Anlass der Anwendung statt nach einem Körperzustand. -->
+      <span class="step__text">Eine Woche, ein Thema. Morgenroutine, Abendritual, Küche oder Hautpflege.</span>
     </li>
     <li class="step">
       <b class="step__name">Danach</b>

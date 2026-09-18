@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Drei Seiten, mehr gibt es nicht. Die Abschnitte der Startseite sind
+     Anker auf derselben Adresse und gehören deshalb nicht einzeln hier hinein.
+
+     lastmod bitte anpassen, wenn sich am Inhalt etwas Wesentliches ändert.
+     priority und changefreq stehen bewusst nicht drin: Google ignoriert beide
+     seit Jahren, sie erzeugen nur Pflegeaufwand. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://anki-yoga.de/</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://anki-yoga.de/impressum.html</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+  <url>
+    <loc>https://anki-yoga.de/datenschutz.html</loc>
+    <lastmod>2026-09-18</lastmod>
+  </url>
+</urlset>

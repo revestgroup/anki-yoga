@@ -1,0 +1,6 @@
+# Alles darf gelesen werden. Die Seite hat keinen geschützten Bereich und
+# keine Seiten, die aus dem Index heraussollen.
+User-agent: *
+Allow: /
+
+Sitemap: https://anki-yoga.de/sitemap.xml
