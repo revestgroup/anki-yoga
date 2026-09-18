@@ -492,7 +492,13 @@
       });
     });
 
-    form.addEventListener('submit', (e) => {
+    // Production-Webhook des n8n-Workflows "Anki Yoga Formular".
+    const WEBHOOK_URL = 'https://auvero.app.n8n.cloud/webhook/anki-yoga-formular';
+
+    const submitBtn = $('#formSubmit');
+    const submitLabel = submitBtn ? $('.btn__label', submitBtn) : null;
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const required = $$('[required]', form);
@@ -512,13 +518,31 @@
         return;
       }
 
-      /* Es geht bewusst nichts raus. Solange kein Backend angebunden ist,
-         zeigt das Formular nur die Bestätigung, damit sich der Ablauf
-         testen lässt. Später kommt hier ein fetch() auf den n8n-Webhook
-         davor, und erst dessen Antwort schaltet weiter. */
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      submitBtn?.setAttribute('disabled', 'true');
+      if (submitLabel) submitLabel.textContent = 'Wird gesendet …';
       if (status) { status.hidden = true; status.textContent = ''; }
-      goToStep?.(4);
-      form.reset();
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error(`Webhook antwortete mit ${res.status}`);
+
+        goToStep?.(4);
+        form.reset();
+      } catch (err) {
+        if (status) {
+          status.hidden = false;
+          status.textContent = 'Das hat leider nicht geklappt. Magst du es gleich nochmal versuchen?';
+        }
+      } finally {
+        submitBtn?.removeAttribute('disabled');
+        if (submitLabel) submitLabel.textContent = 'Nachricht senden';
+      }
     });
   }
 })();
