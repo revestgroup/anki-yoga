@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-24 0 168 58">
+  <title>Sonne — Logo Anki Strahl</title>
+  <!-- Das ist die echte Sonne aus dem Logo, 1:1 aus dem Footer der Website
+       kopiert (Klasse sun footer in index.html), hier in Schwarz statt Gold.
+       Die beiden geraden Linien am unteren Rand (ehemals bis x gleich minus 20
+       bzw. x gleich 140) sind gekürzt, aber gleich dick wie die Strahlen. -->
+  <g fill="none" stroke="#000000" stroke-linecap="round">
+    <g stroke-width="1.4">
+      <path d="M42 56H12"/>
+      <path d="M78 56h30"/>
+      <path d="M60 39V7"/>
+      <path d="M64.4 39.58 68.28 25.09"/>
+      <path d="M55.6 39.58 51.72 25.09"/>
+      <path d="M68.5 41.28 83.5 15.3"/>
+      <path d="M51.5 41.28 36.5 15.3"/>
+      <path d="M72.02 43.98 83.33 32.67"/>
+      <path d="M47.98 43.98 36.67 32.67"/>
+      <path d="M74.72 47.5 101.57 32"/>
+      <path d="M45.28 47.5 18.43 32"/>
+      <path d="M76.42 51.6 92.84 47.2"/>
+      <path d="M43.58 51.6 27.16 47.2"/>
+    </g>
+  </g>
+</svg>

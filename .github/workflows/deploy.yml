@@ -1,0 +1,32 @@
+# Lädt bei jedem Push auf main automatisch alle Dateien per SFTP auf den
+# IONOS-Webspace. Die Zugangsdaten stehen nicht hier im Code, sondern als
+# GitHub Secrets im Repo (Settings -> Secrets and variables -> Actions):
+#
+#   IONOS_SFTP_HOST      z. B. access12345678.webspace-host.com
+#   IONOS_SFTP_USERNAME  der SFTP-Benutzername aus dem IONOS-Bereich
+#   IONOS_SFTP_PASSWORD  das SFTP-Passwort
+#
+# Diese drei Secrets müssen selbst im GitHub-Repo eingetragen werden.
+name: Deploy nach IONOS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Per SFTP hochladen
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+          server: ${{ secrets.IONOS_SFTP_HOST }}
+          username: ${{ secrets.IONOS_SFTP_USERNAME }}
+          password: ${{ secrets.IONOS_SFTP_PASSWORD }}
+          port: 22
+          local_path: './*'
+          remote_path: '/public'
+          sftp_only: true
